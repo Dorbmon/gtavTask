@@ -3,14 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GTA.Math;
 
 namespace GTA
 {
-	internal class mission01: Script
+	internal class mission01: mission
 	{
 		private Blip MissionBlip;
 		private Vehicle Target;
 		private int stage = 0;
+		private Vector3 end = new Vector3(1, 1, 1);
+		private void initActions()
+		{
+			
+		}
+		private void getOnNearbyVehicle()
+		{
+			Vehicle closest = World.GetClosestVehicle(Game.Player.Character.Position, 5);
+			if(closest != null && closest.IsDriveable)
+			{
+				Game.Player.Character.Task.EnterVehicle(closest,  GTA.VehicleSeat.Driver);
+			}
+		}
+		private void driveForward(float add_v)
+		{
+			Vehicle now = Game.Player.Character.CurrentVehicle;
+			if (now == null)
+			{
+				return;
+			}
+			now.Velocity += now.ForwardVector.Normalized * add_v;
+		}
+		private void rotate(Vector3 v)
+		{
+			Vehicle now = Game.Player.Character.CurrentVehicle;
+			if (now == null)
+			{
+				return;
+			}
+			now.Rotation += v;
+		}
+		private bool is_hit_end()
+		{
+			return Game.Player.Character.Position.DistanceTo(end) < 5;
+		}
 		private void OnTick(object sender, EventArgs e)
 		{
 			if (stage == 0)
