@@ -8,7 +8,16 @@ namespace GTA
 {
 	internal class mission: Script
 	{
-		mission()
+		public virtual void load()
+		{
+
+
+		}
+		public virtual void destroy()
+		{
+
+		}
+		public mission()
 		{
 			Tick += OnTick;
 		}

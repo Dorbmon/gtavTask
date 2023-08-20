@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,19 @@ namespace GTA
 		private Vehicle Target;
 		private int stage = 0;
 		private Vector3 end = new Vector3(1, 1, 1);
+		private Ped ped;
 		private void initActions()
 		{
 			
+		}
+		public override void load()
+		{
+			if (ped == null)
+			{
+				ped = World.CreatePed(PedHash.Beach01AMY, Game.LocalPlayerPed.Position + (GTA.Math.Vector3.RelativeFront * 3));
+			}
+			hitted = false;
+			GTA.UI.Notification.Show("shoot Beach01AMY!");
 		}
 		private void getOnNearbyVehicle()
 		{
@@ -65,42 +76,40 @@ namespace GTA
 				}
 			}
 		}
-		private void OnShutdown(object sender, EventArgs e)
+		public override void destroy()
 		{
-			if (Target != null && Target.Exists())
+			if (ped != null)
 			{
-				// Destroy the blip if it exists
-				if (Target.AttachedBlip != null && Target.AttachedBlip.Exists())
-				{
-					Target.AttachedBlip.Delete();
-				}
-
-				// Then, destroy the vehicle
-				Target.Delete();
+				ped.Delete();
 			}
-			Target?.Delete();
 
 		}
 			public mission01()
 		{
-			Tick += OnTick;
-			Aborted += OnShutdown;
-			Model Banshee = new Model(VehicleHash.Banshee2);
-			Banshee.Request();
-			while (!Banshee.IsLoaded)
-			{
-				Yield();
-			}
-			Target = World.CreateVehicle(Banshee, Game.LocalPlayerPed.Position + (GTA.Math.Vector3.RelativeFront * 3), 268.2f);
-			MissionBlip = World.CreateBlip(Target.Position);
-			MissionBlip.Sprite = BlipSprite.Lester;
-			MissionBlip.Color = BlipColor.Yellow;
-			MissionBlip.Name = "Placeholder (LMP)";
-			Target.AddBlip();
-			Target.AttachedBlip.Sprite = BlipSprite.GetawayCar;
-			Target.AttachedBlip.IsShortRange = false;
-			Target.AttachedBlip.Color = BlipColor.Green;
+			
 		}
-
+		private bool hitted = false;
+		public void shoot()
+		{
+			// use ray to get the object
+			// Game.Player.Character.Task.VehicleShootAtPed();
+			var last = Game.Player.Character.DamageRecords.Last<EntityDamageRecord>();
+			if (last != null && last.Victim.EntityType == EntityType.Ped && last.Victim == ped)
+			{
+				hitted = true;
+			}
+		}
+		public override bool is_mission_finished()
+		{
+			return hitted;
+		}
 	}
 }
+// task list:
+
+// 1. shoot the ped with cloth in specific color
+// 2. move to a car and then drive it to a position
+// 3. track a ped
+// 4. 
+
+// use lua script to communicate with lm
