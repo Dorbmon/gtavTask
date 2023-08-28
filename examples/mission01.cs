@@ -19,6 +19,37 @@ namespace GTA
 		{
 			
 		}
+		private void walkTo(int hash)
+		{
+			var entities = World.GetAllEntities();
+			foreach(var entity in entities)
+			{
+				if (entity.GetHashCode() == hash)
+				{
+					var vehicle = Game.Player.Character.CurrentVehicle;
+					if (vehicle != null)
+					{
+						Game.Player.Character.Task.DriveTo(vehicle, entity.Position, 10,VehicleDrivingFlags.None,10);
+					} else
+					{
+						Game.Player.Character.Task.GoTo(entity);
+					}
+					
+					break;
+				}
+			}
+		}
+		private void driveVehicleForward()
+		{
+			var vehicle = Game.Player.Character.CurrentVehicle;
+			if (vehicle != null)
+			{
+			}
+		}
+		private void getOnNearByVehicle()
+		{
+			Game.Player.Character.Task.EnterAnyVehicle();
+		}
 		public override void load()
 		{
 			if (ped == null)
@@ -28,6 +59,7 @@ namespace GTA
 			hitted = false;
 			GTA.UI.Notification.Show("shoot Beach01AMY!");
 		}
+	
 		private void getOnNearbyVehicle()
 		{
 			Vehicle closest = World.GetClosestVehicle(Game.Player.Character.Position, 5);
