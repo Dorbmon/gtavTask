@@ -19,6 +19,27 @@ namespace GTA
 		{
 			
 		}
+		private void walkToModel(int model)
+		{
+			var entities = World.GetAllEntities();
+			foreach (var entity in entities)
+			{
+				if (entity.Model.Hash == model)
+				{
+					var vehicle = Game.Player.Character.CurrentVehicle;
+					if (vehicle != null)
+					{
+						Game.Player.Character.Task.DriveTo(vehicle, entity.Position, 10, VehicleDrivingFlags.None, 10);
+					}
+					else
+					{
+						Game.Player.Character.Task.GoTo(entity);
+					}
+
+					break;
+				}
+			}
+		}
 		private void walkTo(int hash)
 		{
 			var entities = World.GetAllEntities();
@@ -37,14 +58,6 @@ namespace GTA
 					
 					break;
 				}
-			}
-		}
-		private void driveVehicleForward()
-		{
-			var vehicle = Game.Player.Character.CurrentVehicle;
-			if (vehicle != null)
-			{
-				
 			}
 		}
 		private bool didHurtAnyOne()
