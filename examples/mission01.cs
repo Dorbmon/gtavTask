@@ -44,7 +44,22 @@ namespace GTA
 			var vehicle = Game.Player.Character.CurrentVehicle;
 			if (vehicle != null)
 			{
+				
 			}
+		}
+		private bool didHurtAnyOne()
+		{
+			// there is no method found to get hurt record on others, so get ped and then check them
+			var nearbyPeds = World.GetNearbyPeds(Game.Player.Character, 10);
+			foreach(var ped in nearbyPeds)
+			{
+				if (ped.Health != ped.MaxHealth)
+				{
+					// got hurt
+					return true;
+				}
+			}
+			return false;
 		}
 		private void getOnNearByVehicle()
 		{
