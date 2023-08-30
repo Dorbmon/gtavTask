@@ -15,11 +15,40 @@ namespace GTA
 		private int stage = 0;
 		private Vector3 end = new Vector3(1, 1, 1);
 		private Ped ped;
-
-		
-		public mission01()
+		private void initActions()
 		{
-
+			
+		}
+		private void walkTo(int hash)
+		{
+			var entities = World.GetAllEntities();
+			foreach(var entity in entities)
+			{
+				if (entity.GetHashCode() == hash)
+				{
+					var vehicle = Game.Player.Character.CurrentVehicle;
+					if (vehicle != null)
+					{
+						Game.Player.Character.Task.DriveTo(vehicle, entity.Position, 10,VehicleDrivingFlags.None,10);
+					} else
+					{
+						Game.Player.Character.Task.GoTo(entity);
+					}
+					
+					break;
+				}
+			}
+		}
+		private void driveVehicleForward()
+		{
+			var vehicle = Game.Player.Character.CurrentVehicle;
+			if (vehicle != null)
+			{
+			}
+		}
+		private void getOnNearByVehicle()
+		{
+			Game.Player.Character.Task.EnterAnyVehicle();
 		}
 		public override void load()
 		{
