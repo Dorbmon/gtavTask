@@ -15,40 +15,11 @@ namespace GTA
 		private int stage = 0;
 		private Vector3 end = new Vector3(1, 1, 1);
 		private Ped ped;
-		private void initActions()
+
+		
+		public mission01()
 		{
-			
-		}
-		private void walkTo(int hash)
-		{
-			var entities = World.GetAllEntities();
-			foreach(var entity in entities)
-			{
-				if (entity.GetHashCode() == hash)
-				{
-					var vehicle = Game.Player.Character.CurrentVehicle;
-					if (vehicle != null)
-					{
-						Game.Player.Character.Task.DriveTo(vehicle, entity.Position, 10,VehicleDrivingFlags.None,10);
-					} else
-					{
-						Game.Player.Character.Task.GoTo(entity);
-					}
-					
-					break;
-				}
-			}
-		}
-		private void driveVehicleForward()
-		{
-			var vehicle = Game.Player.Character.CurrentVehicle;
-			if (vehicle != null)
-			{
-			}
-		}
-		private void getOnNearByVehicle()
-		{
-			Game.Player.Character.Task.EnterAnyVehicle();
+
 		}
 		public override void load()
 		{
@@ -59,33 +30,21 @@ namespace GTA
 			hitted = false;
 			GTA.UI.Notification.Show("shoot Beach01AMY!");
 		}
-	
-		private void getOnNearbyVehicle()
+		public override void destroy()
 		{
-			Vehicle closest = World.GetClosestVehicle(Game.Player.Character.Position, 5);
-			if(closest != null && closest.IsDriveable)
+			if (ped != null)
 			{
-				Game.Player.Character.Task.EnterVehicle(closest,  GTA.VehicleSeat.Driver);
+				ped.Delete();
 			}
+
 		}
-		private void driveForward(float add_v)
+		private void initActions()
 		{
-			Vehicle now = Game.Player.Character.CurrentVehicle;
-			if (now == null)
-			{
-				return;
-			}
-			now.Velocity += now.ForwardVector.Normalized * add_v;
+			
 		}
-		private void rotate(Vector3 v)
-		{
-			Vehicle now = Game.Player.Character.CurrentVehicle;
-			if (now == null)
-			{
-				return;
-			}
-			now.Rotation += v;
-		}
+
+		//player move to object with hash
+		
 		private bool is_hit_end()
 		{
 			return Game.Player.Character.Position.DistanceTo(end) < 5;
@@ -108,18 +67,7 @@ namespace GTA
 				}
 			}
 		}
-		public override void destroy()
-		{
-			if (ped != null)
-			{
-				ped.Delete();
-			}
-
-		}
-			public mission01()
-		{
-			
-		}
+		
 		private bool hitted = false;
 		public void shoot()
 		{
