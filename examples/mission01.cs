@@ -8,7 +8,7 @@ using GTA.Math;
 
 namespace GTA
 {
-	internal class mission01: mission
+	internal class mission01 : mission
 	{
 		private Blip MissionBlip;
 		private Vehicle Target;
@@ -17,39 +17,9 @@ namespace GTA
 		private Ped ped;
 		private void initActions()
 		{
-			
+
 		}
-		private void walkTo(int hash)
-		{
-			var entities = World.GetAllEntities();
-			foreach(var entity in entities)
-			{
-				if (entity.GetHashCode() == hash)
-				{
-					var vehicle = Game.Player.Character.CurrentVehicle;
-					if (vehicle != null)
-					{
-						Game.Player.Character.Task.DriveTo(vehicle, entity.Position, 10,VehicleDrivingFlags.None,10);
-					} else
-					{
-						Game.Player.Character.Task.GoTo(entity);
-					}
-					
-					break;
-				}
-			}
-		}
-		private void driveVehicleForward()
-		{
-			var vehicle = Game.Player.Character.CurrentVehicle;
-			if (vehicle != null)
-			{
-			}
-		}
-		private void getOnNearByVehicle()
-		{
-			Game.Player.Character.Task.EnterAnyVehicle();
-		}
+		
 		public override void load()
 		{
 			if (ped == null)
@@ -59,21 +29,7 @@ namespace GTA
 			hitted = false;
 			GTA.UI.Notification.Show("shoot Beach01AMY!");
 		}
-		public override void destroy()
-		{
-			if (ped != null)
-			{
-				ped.Delete();
-			}
 
-		}
-		private void initActions()
-		{
-			
-		}
-
-		//player move to object with hash
-		
 		private bool is_hit_end()
 		{
 			return Game.Player.Character.Position.DistanceTo(end) < 5;
@@ -96,7 +52,18 @@ namespace GTA
 				}
 			}
 		}
-		
+		public override void destroy()
+		{
+			if (ped != null)
+			{
+				ped.Delete();
+			}
+
+		}
+		public mission01()
+		{
+
+		}
 		private bool hitted = false;
 		public void shoot()
 		{

@@ -35,7 +35,27 @@ namespace GTA
 			}
 			*/
 		}
+		private void walkToModel(int model)
+		{
+			var entities = World.GetAllEntities();
+			foreach (var entity in entities)
+			{
+				if (entity.Model.Hash == model)
+				{
+					var vehicle = Game.Player.Character.CurrentVehicle;
+					if (vehicle != null)
+					{
+						Game.Player.Character.Task.DriveTo(vehicle, entity.Position, 10, VehicleDrivingFlags.None, 10);
+					}
+					else
+					{
+						Game.Player.Character.Task.GoTo(entity);
+					}
 
+					break;
+				}
+			}
+		}
 		private void walkTo(int hash)
 		{
 			var entities = World.GetAllEntities();
@@ -52,9 +72,24 @@ namespace GTA
 					{
 						Game.Player.Character.Task.GoTo(entity);
 					}
+
 					break;
 				}
 			}
+		}
+		private bool didHurtAnyOne()
+		{
+			// there is no method found to get hurt record on others, so get ped and then check them
+			var nearbyPeds = World.GetNearbyPeds(Game.Player.Character, 10);
+			foreach (var ped in nearbyPeds)
+			{
+				if (ped.Health != ped.MaxHealth)
+				{
+					// got hurt
+					return true;
+				}
+			}
+			return false;
 		}
 
 		//run to an object
@@ -114,6 +149,7 @@ namespace GTA
 				player.Task.WarpOutOfVehicle(curVehicle);
 			}
 		}
+
 		private void driveForward(float add_v)
 		{
 			Vehicle now = Game.Player.Character.CurrentVehicle;
