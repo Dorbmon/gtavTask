@@ -12,7 +12,7 @@ namespace GTA
 	{
 		List<mission> missions = new List<mission>();
 		Random rand = new Random();
-		missionManager()
+		public missionManager()
 		{
 			Tick += OnTick;
 			KeyDown += OnKeyDown;
@@ -46,7 +46,7 @@ namespace GTA
 				while (!mission.is_mission_finished())
 				{
 					Yield();
-					if (DateTime.Now.Subtract(begin).TotalSeconds > 30)
+					if (DateTime.Now.Subtract(begin).TotalSeconds > 60)
 					{
 						// mission failed
 						finished = false;
@@ -65,7 +65,8 @@ namespace GTA
 		}
 		private void loadMissions()
 		{
-			missions.Add(InstantiateScript<mission01>());
+			//missions.Add(InstantiateScript<mission01>());
+			missions.Add(InstantiateScript<mission_cross_intersection>());
 		}
 	}
 }
