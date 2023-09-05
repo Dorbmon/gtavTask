@@ -35,7 +35,6 @@ namespace GTA
 					{
 						Game.Player.Character.Task.GoTo(entity);
 					}
-
 					break;
 				}
 			}
@@ -64,11 +63,11 @@ namespace GTA
 		{
 			// there is no method found to get hurt record on others, so get ped and then check them
 			var nearbyPeds = World.GetNearbyPeds(Game.Player.Character, 10);
-			foreach(var ped in nearbyPeds)
+			Ped playerPed = Game.Player.Character;
+			foreach (var ped in nearbyPeds)
 			{
-				if (ped.Health != ped.MaxHealth)
+				if (ped.HasBeenDamagedBy(playerPed))
 				{
-					// got hurt
 					return true;
 				}
 			}

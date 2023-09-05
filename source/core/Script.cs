@@ -255,4 +255,7 @@ namespace SHVDN
 }
 // walk to somewhere
 // capture image
+// rotate
+
+
 // 
