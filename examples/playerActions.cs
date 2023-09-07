@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+//using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GTA.Math;
+using SHVDN;
 using static SHVDN.NativeMemory;
 
 namespace GTA
@@ -16,32 +18,29 @@ namespace GTA
 			KeyDown += PlayerActions_KeyDown;
 		}
 
-		private void PlayerActions_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+		public void PlayerActions_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
-			/**
-			if (e.KeyCode == Keys.T)
-			{
-				getOnNearbyVehicle();
-			}
 
-			if (e.KeyCode == Keys.M)
+			if (e.KeyCode == Keys.F9)
 			{
-				driveVehicleForward();
+				showPlayerPos();
 			}
 
 			if (e.KeyCode == Keys.F10)
 			{
-				showPlayerPos();
+				
 			}
-			*/
+
+
 		}
-		private void walkToModel(int model)
+		public static void walkToModel(int model)
 		{
 			var entities = World.GetAllEntities();
 			foreach (var entity in entities)
 			{
 				if (entity.Model.Hash == model)
 				{
+					GTA.UI.Screen.ShowSubtitle($"in walkToModel, found model, pos:{entity.Position}");
 					var vehicle = Game.Player.Character.CurrentVehicle;
 					if (vehicle != null)
 					{
@@ -51,12 +50,26 @@ namespace GTA
 					{
 						Game.Player.Character.Task.GoTo(entity);
 					}
-
 					break;
 				}
 			}
 		}
-		private void walkTo(int hash)
+
+		public static bool walkToEntity(Entity target)
+		{
+			if (target == null)
+			{
+				//Log.Message(Log.Level.Debug, "walkToEntity, target not found");
+				//Console.WriteLine("");
+				return false;
+			}
+			Game.Player.Character.Task.GoTo(target, new Vector3(1.0f, 1.0f, 1.0f));
+			//Log.Message(Log.Level.Debug, "walkToEntity, go to target");
+			return true;
+			//Console.WriteLine("walkToEntity, go to target");
+		}
+		
+		public void walkTo(int hash)
 		{
 			var entities = World.GetAllEntities();
 			foreach (var entity in entities)
@@ -77,7 +90,13 @@ namespace GTA
 				}
 			}
 		}
-		private bool didHurtAnyOne()
+
+		public static void standStill()
+		{
+			Game.Player.Character.Task.StandStill(-1);
+		}
+
+		public bool didHurtAnyOne()
 		{
 			// there is no method found to get hurt record on others, so get ped and then check them
 			var nearbyPeds = World.GetNearbyPeds(Game.Player.Character, 10);
@@ -93,7 +112,7 @@ namespace GTA
 		}
 
 		//run to an object
-		private void runTo(int hash)
+		public void runTo(int hash)
 		{
 			var entities = World.GetAllEntities();
 			foreach (var entity in entities)
@@ -117,40 +136,42 @@ namespace GTA
 		}
 		*/
 
-		private void driveVehicleForward()
+		public void driveVehicleForward()
 		{
 			var vehicle = Game.Player.Character.CurrentVehicle;
 			if (vehicle != null)
 			{
 			}
 		}
-		private void getOnNearByVehicle()
+		public void getOnNearByVehicle()
 		{
 			Game.Player.Character.Task.EnterAnyVehicle();
 		}
 
 
-		private void getOnNearbyVehicle()
+		public static bool getOnNearbyVehicle()
 		{
 			Vehicle closest = World.GetClosestVehicle(Game.Player.Character.Position, 5);
 			if (closest != null && closest.IsDriveable)
 			{
 				Game.Player.Character.Task.EnterVehicle(closest, GTA.VehicleSeat.Driver);
+				return true;
 			}
+			return false;
 		}
 
 		//get off vehicle
-		private void getOffVehicle()
+		public static void getOffVehicle()
 		{
 			Ped player = Game.Player.Character;
 			Vehicle curVehicle = player.CurrentVehicle;
 			if (curVehicle != null && player.IsInVehicle())
 			{
-				player.Task.WarpOutOfVehicle(curVehicle);
+				player.Task.LeaveVehicle(curVehicle, true);
 			}
 		}
 
-		private void driveForward(float add_v)
+		public void driveForward(float add_v)
 		{
 			Vehicle now = Game.Player.Character.CurrentVehicle;
 			if (now == null)
@@ -161,7 +182,7 @@ namespace GTA
 		}
 
 		//player sound horn in car (not working)
-		private void pressHorn()
+		public void pressHorn()
 		{
 			if (Game.Player.Character.IsInVehicle())
 			{
@@ -173,7 +194,7 @@ namespace GTA
 				}
 			}
 		}
-		private void rotate(Vector3 v)
+		public void rotate(Vector3 v)
 		{
 			Vehicle now = Game.Player.Character.CurrentVehicle;
 			if (now == null)
@@ -182,7 +203,7 @@ namespace GTA
 			}
 			now.Rotation += v;
 		}
-		private void showPlayerPos()
+		public static void showPlayerPos()
 		{
 			Vector3 playerPosition = Game.Player.Character.Position;
 			GTA.UI.Screen.ShowSubtitle($"Player Position: {playerPosition.X}, {playerPosition.Y}, {playerPosition.Z}");
@@ -190,7 +211,7 @@ namespace GTA
 
 
 		//jump up the object in front of the player
-		private void climbUp()
+		public void climbUp()
 		{
 			Ped player = Game.Player.Character;
 			player.Task.Climb();
@@ -204,7 +225,7 @@ namespace GTA
 		}
 
 		//talk to someone (no real conversations, just gestures acting like the player is talking)
-		private void talkTo(int target_ped_hash)
+		public void talkTo(int target_ped_hash)
 		{
 			Ped target_ped = null;
 			foreach (Ped ped in World.GetAllPeds())
@@ -224,7 +245,7 @@ namespace GTA
 			
 		}
 
-		private void talkToClosestPed()
+		public void talkToClosestPed()
 		{
 			Ped target_ped = World.GetClosestPed(Game.Player.Character.Position, 50.0f);
 
@@ -236,7 +257,7 @@ namespace GTA
 		}
 
 		//combat with someone
-		private void combat(int target_ped_hash)
+		public void combat(int target_ped_hash)
 		{
 			Ped target_ped = null;
 			foreach (Ped ped in World.GetAllPeds())
@@ -256,7 +277,7 @@ namespace GTA
 		}
 
 		//aim gun at an object
-		private void aimGunAt(int hash)
+		public void aimGunAt(int hash)
 		{
 			var entities = World.GetAllEntities();
 			foreach (var entity in entities)
@@ -270,6 +291,93 @@ namespace GTA
 				}
 			}
 		}
+
+		public static void openVehicleFrontRightDoor()
+		{
+			Ped player = Game.Player.Character;
+			Vehicle car = World.GetClosestVehicle(player.Position, 5.0f);
+
+			if (car != null) 
+			{
+				car.Doors[VehicleDoorIndex.FrontRightDoor].Open();
+			}
+		}
+		public static bool letDogGoToPlayer()
+		{
+			Ped player = Game.Player.Character;
+			Ped chop = World.GetClosestPed(player.Position, 10.0f, PedHash.Chop);
+
+			if (chop.Exists() && player.Exists())
+			{
+				
+				float distanceToPlayer = chop.Position.DistanceTo(player.Position);
+				
+				if (distanceToPlayer >= 1.0f)
+				{
+					GTA.UI.Notification.Show("try to make chop follow...");
+					Math.Vector3 offset = new Math.Vector3(0.3f, 0.3f, 0.3f); 
+					float speed = 2.0f;  // 设置移动速度
+					chop.Task.GoTo(player.Position + offset);
+					Log.Message(Log.Level.Debug, "letDogFollow, go to player");
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public static bool letDogFollow()
+		{
+			Ped player = Game.Player.Character;
+			Ped chop = World.GetClosestPed(player.Position, 10.0f, PedHash.Chop);
+
+			if (chop.Exists() && player.Exists())
+			{
+				float distanceToPlayer = chop.Position.DistanceTo(player.Position);
+
+				chop.Task.FollowToOffsetFromEntity(player, new Vector3(0.2f, 0.3f, 0.0f), 2.0f);
+				return true;
+			}
+			return false;
+		}
+
+		public static void letDogStopFollow()
+		{
+			Ped player = Game.Player.Character;
+			Ped chop = World.GetClosestPed(player.Position, 10.0f, PedHash.Chop);
+
+			if (chop.Exists() && player.Exists())
+			{
+				float distanceToPlayer = chop.Position.DistanceTo(player.Position);
+
+				if (distanceToPlayer <= 5.0f)
+				{
+					chop.Task.ClearAllImmediately();
+				}
+			}
+		}
+
+		public static bool letDogOnCar()
+		{
+
+			Ped player = Game.Player.Character;
+			Ped chop = World.GetClosestPed(player.Position, 5.0f, PedHash.Chop);
+			Vehicle car = World.GetClosestVehicle(player.Position, 5.0f);
+			if (chop.Exists() && player.Exists() && car.Exists())
+			{
+				Log.Message(Log.Level.Debug, "letDogOnCar.");
+				float distanceToCar = chop.Position.DistanceTo(car.Position);
+				bool isFrontRightDoorOpen = car.Doors[VehicleDoorIndex.FrontRightDoor].IsOpen;
+				if (distanceToCar <= 5.0f && isFrontRightDoorOpen)
+				{
+					GTA.UI.Notification.Show("RightFront door is open, letting chop into the car...");
+					chop.Task.ClearAllImmediately();
+					chop.Task.EnterVehicle(car, VehicleSeat.RightFront);
+					return true;
+				}
+			}
+			return false;
+		}
+
 
 	}
 }
