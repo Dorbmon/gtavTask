@@ -46,7 +46,7 @@ namespace GTA
 				while (!mission.is_mission_finished())
 				{
 					Yield();
-					if (DateTime.Now.Subtract(begin).TotalSeconds > 60)
+					if (DateTime.Now.Subtract(begin).TotalSeconds > 180)
 					{
 						// mission failed
 						finished = false;
@@ -66,7 +66,8 @@ namespace GTA
 		private void loadMissions()
 		{
 			//missions.Add(InstantiateScript<mission01>());
-			missions.Add(InstantiateScript<mission_cross_intersection>());
+			//missions.Add(InstantiateScript<mission_cross_intersection>());
+			missions.Add(InstantiateScript<mission_dog_follow>());
 		}
 	}
 }

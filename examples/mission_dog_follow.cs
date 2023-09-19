@@ -31,6 +31,7 @@ namespace GTA
 		private Vehicle vehicle;
 		private Vector3 carPos = new Vector3(0, 0, 0);
 		private Vector3 dogPos = new Vector3(0, 0, 0);
+		private Vector3 playerPos = new Vector3(0, 0, 0);
 		private Model dogModel;
 		private Ped dog;
 		private int counter = 0;
@@ -40,6 +41,7 @@ namespace GTA
 		private bool dogFollowState = false;
 		private bool dogOnVehicle = false;
 		private bool playerInVehicleState = false;
+		private int pause = 150;
 
 
 		
@@ -52,15 +54,24 @@ namespace GTA
 		{
 			GTA.UI.Notification.Show("load mission_dog_follow...");
 			Ped player = Game.Player.Character;
-			changePos(ref carPos, 127, -1080, 28);
-			changePos(ref dogPos, 142, -1062, 29);
-	
+			changePos(ref playerPos, -946, 37, 49);
+			changePos(ref carPos, -951, 32, 48);
+			changePos(ref dogPos, -948, 45, 49);
+
+			// 设置游戏时间为下午2点30分
+			World.CurrentTimeOfDay = new TimeSpan(14, 30, 0);
+			World.Weather = Weather.Clear;  // 设置天气为晴朗
+
 			vehicle = World.CreateVehicle(VehicleHash.BestiaGTS, carPos);
-			if (vehicle !=  null)
-			{
-				player.SetIntoVehicle(vehicle, VehicleSeat.Driver);
-			}
-			
+			vehicle.Heading = 30;
+
+			//if (vehicle !=  null)
+			//{
+			//	player.SetIntoVehicle(vehicle, VehicleSeat.Driver);
+			//}
+
+			Game.Player.Character.Position = playerPos;
+
 			dogModel = new Model(PedHash.Chop);
 			if (dogModel.IsValid)
 			{
@@ -107,13 +118,13 @@ namespace GTA
 					{
 						return;
 					}
-					if (counter < 250)
+					if (counter < pause)
 					{
 						counter++;
 						return;
 					}
-					curState = MissionState.ExitVehicle;
-					GTA.UI.Notification.Show("Mission started. Exit your vehicle.");
+					curState = MissionState.WalkToDog;
+					GTA.UI.Notification.Show("Mission started. Walk to the dog.");
 					counter = 0;
 
 					break;
@@ -131,7 +142,7 @@ namespace GTA
 					break;
 
 				case MissionState.WalkToDog:
-					if (counter < 250)
+					if (counter < pause)
 					{
 						counter++;
 						return;
@@ -162,7 +173,7 @@ namespace GTA
 					break;
 
 				case MissionState.CommandDogToFollow:
-					if (counter < 250)
+					if (counter < pause)
 					{
 						counter++;
 						return;
@@ -191,7 +202,7 @@ namespace GTA
 					break;
 
 				case MissionState.PlayerInVehicle:
-					if (counter < 250)
+					if (counter < pause)
 					{
 						counter++;
 						return;
@@ -208,7 +219,7 @@ namespace GTA
 					break;
 
 				case MissionState.OpenFrontRightDoor:
-					if (counter < 250)
+					if (counter < pause)
 					{
 						counter++;
 						return;
@@ -227,7 +238,7 @@ namespace GTA
 					break;
 
 				case MissionState.DogInVehicle:
-					if (counter < 250)
+					if (counter < pause)
 					{
 						counter++;
 						return;
