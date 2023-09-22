@@ -26,11 +26,6 @@ namespace GTA
 				showPlayerPos();
 			}
 
-			if (e.KeyCode == Keys.F10)
-			{
-				
-			}
-
 
 		}
 		public static void walkToModel(int model)
@@ -91,11 +86,6 @@ namespace GTA
 			}
 		}
 
-		public static void standStill()
-		{
-			Game.Player.Character.Task.StandStill(-1);
-		}
-
 		public bool didHurtAnyOne()
 		{
 			// there is no method found to get hurt record on others, so get ped and then check them
@@ -112,17 +102,18 @@ namespace GTA
 		}
 
 		//run to an object
-		public void runTo(int hash)
+		public static bool runTo(Entity target)
 		{
-			var entities = World.GetAllEntities();
-			foreach (var entity in entities)
+			if (target == null)
 			{
-				if (entity.GetHashCode() == hash)
-				{
-					Game.Player.Character.Task.RunTo(entity.Position);
-					break;
-				}
+				//Log.Message(Log.Level.Debug, "walkToEntity, target not found");
+				//Console.WriteLine("");
+				return false;
 			}
+			Game.Player.Character.Task.RunTo(target.Position);
+			//Log.Message(Log.Level.Debug, "walkToEntity, go to target");
+			return true;
+			//Console.WriteLine("walkToEntity, go to target");
 		}
 		/**
 		 * swim is not supported now
@@ -171,15 +162,27 @@ namespace GTA
 			}
 		}
 
-		public void driveForward(float add_v)
+		public static bool driveForward(float add_v = 1)
 		{
 			Vehicle now = Game.Player.Character.CurrentVehicle;
 			if (now == null)
 			{
-				return;
+				return false;
 			}
 			now.Velocity += now.ForwardVector.Normalized * add_v;
+			return true;
 		}
+
+		public static bool driveTo(Vehicle tool, Vector3 pos)
+		{
+			if (pos == null)
+			{
+				return false;
+			}
+			Game.Player.Character.Task.DriveTo(tool, pos, 5.0f, 10.0f);
+			return true;
+		}
+
 
 		//player sound horn in car (not working)
 		public void pressHorn()
@@ -325,59 +328,73 @@ namespace GTA
 			return false;
 		}
 
-		public static bool letDogFollow()
+		public static bool letFollow(Ped target)
 		{
 			Ped player = Game.Player.Character;
-			Ped chop = World.GetClosestPed(player.Position, 10.0f, PedHash.Chop);
 
-			if (chop.Exists() && player.Exists())
+			if (target.Exists() && player.Exists())
 			{
-				float distanceToPlayer = chop.Position.DistanceTo(player.Position);
+				float distanceToPlayer = target.Position.DistanceTo(player.Position);
 
-				chop.Task.FollowToOffsetFromEntity(player, new Vector3(0.2f, 0.3f, 0.0f), 2.0f);
+				target.Task.FollowToOffsetFromEntity(player, new Vector3(0.2f, 0.3f, 0.0f), 2.0f);
 				return true;
 			}
 			return false;
 		}
 
-		public static void letDogStopFollow()
+		public static void letStopFollow(Ped target)
 		{
 			Ped player = Game.Player.Character;
-			Ped chop = World.GetClosestPed(player.Position, 10.0f, PedHash.Chop);
 
-			if (chop.Exists() && player.Exists())
+			if (target.Exists() && player.Exists())
 			{
-				float distanceToPlayer = chop.Position.DistanceTo(player.Position);
+				float distanceToPlayer = target.Position.DistanceTo(player.Position);
 
 				if (distanceToPlayer <= 5.0f)
 				{
-					chop.Task.ClearAllImmediately();
+					target.Task.ClearAllImmediately();
 				}
 			}
 		}
 
-		public static bool letDogOnCar()
+		public static bool letOnCar(Ped target)
 		{
 
 			Ped player = Game.Player.Character;
-			Ped chop = World.GetClosestPed(player.Position, 5.0f, PedHash.Chop);
 			Vehicle car = World.GetClosestVehicle(player.Position, 5.0f);
-			if (chop.Exists() && player.Exists() && car.Exists())
+			if (target.Exists() && player.Exists() && car.Exists())
 			{
 				Log.Message(Log.Level.Debug, "letDogOnCar.");
-				float distanceToCar = chop.Position.DistanceTo(car.Position);
+				float distanceToCar = target.Position.DistanceTo(car.Position);
 				bool isFrontRightDoorOpen = car.Doors[VehicleDoorIndex.FrontRightDoor].IsOpen;
 				if (distanceToCar <= 5.0f && isFrontRightDoorOpen)
 				{
 					GTA.UI.Notification.Show("RightFront door is open, letting chop into the car...");
-					chop.Task.ClearAllImmediately();
-					chop.Task.EnterVehicle(car, VehicleSeat.RightFront);
+					target.Task.ClearAllImmediately();
+					target.Task.EnterVehicle(car, VehicleSeat.RightFront);
 					return true;
 				}
 			}
 			return false;
 		}
 
+		public static bool stopFight(Ped target1, Ped  target2)
+		{
+			Ped player = Game.Player.Character;
+			if (target1.Exists() && target2.Exists() && player.Exists())
+			{
+				float distance1 = target1.Position.DistanceTo(player.Position);
+				float distance2 = target2.Position.DistanceTo(player.Position);
+
+				if (distance1 <= 5.0f || distance2 <= 5.0f)
+				{
+					target1.Task.ClearAllImmediately();
+					target2.Task.ClearAllImmediately();
+					return true;
+				}
+			}
+			return false;
+		}
 
 	}
 }

@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SHVDN;
 
 namespace GTA
 {
@@ -12,6 +13,7 @@ namespace GTA
 	{
 		List<mission> missions = new List<mission>();
 		Random rand = new Random();
+		private bool isClearPressed = false;
 		public missionManager()
 		{
 			Tick += OnTick;
@@ -25,8 +27,14 @@ namespace GTA
 		{
 			if (e.KeyCode == Keys.F7) {
 				// start to do missions
+				clearMissions();
 				loadMissions();
 				runMissionLoop();
+			}
+			if (e.KeyCode == Keys.F8)
+			{
+				Log.Message(Log.Level.Info, "F11 is pressed ", ".");
+				isClearPressed = true;
 			}
 		}
 		private void reset_lm()
@@ -46,12 +54,21 @@ namespace GTA
 				while (!mission.is_mission_finished())
 				{
 					Yield();
-					if (DateTime.Now.Subtract(begin).TotalSeconds > 180)
+					
+					if (DateTime.Now.Subtract(begin).TotalSeconds > 600)
 					{
 						// mission failed
 						finished = false;
 						break;
 					}
+
+					if (isClearPressed)
+					{
+						Log.Message(Log.Level.Info, "F11 is pressed, mission set finish ", ".");
+						finished = false;
+						break;
+					}
+					
 				}
 				if (finished)
 				{
@@ -61,6 +78,12 @@ namespace GTA
 					GTA.UI.Notification.Show("mission failed!");
 				}
 				mission.destroy();
+				if (isClearPressed)
+				{
+					Log.Message(Log.Level.Info, "F11 is pressed, call clearMissions ", ".");
+					clearMissions();
+					isClearPressed = false;
+				}
 			}
 		}
 		private void loadMissions()
@@ -68,6 +91,19 @@ namespace GTA
 			//missions.Add(InstantiateScript<mission01>());
 			//missions.Add(InstantiateScript<mission_cross_intersection>());
 			missions.Add(InstantiateScript<mission_dog_follow>());
+		}
+		private void clearMissions()
+		{
+			GTA.UI.Notification.Show("clearMissions!");
+			Log.Message(Log.Level.Info, " clear missions, mission_count= ", missions.Count.ToString(), ".");
+			for (int i = 0; i < missions.Count; i++)
+			{
+				var mission = missions[i];
+				mission.destroy();
+			}
+			missions.Clear();
+			Log.Message(Log.Level.Info, " clear missions done, mission_count= ", missions.Count.ToString(), ".");
+			GTA.UI.Screen.ShowSubtitle($"mission_count: {missions.Count}");
 		}
 	}
 }

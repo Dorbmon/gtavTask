@@ -10,6 +10,7 @@ using System.Globalization;
 
 namespace ScriptInstance
 {
+	
 	public class RSeg
 	{
 		public String model;
@@ -45,6 +46,65 @@ namespace ScriptInstance
 		private void unpause()
 		{
 			Game.Pause(false);
+		}
+		private void setVisibility(bool visible, int type)
+		{
+			int alpha_level;
+			if (visible) alpha_level = 255;
+			else alpha_level = 0;
+			var props = World.GetAllProps();
+			bool unkb = true;
+			switch (type)
+			{
+				case (1):
+					{
+						foreach (var i in props)
+						{
+							if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.DOES_ENTITY_EXIST, i))
+							{
+								GTA.Native.Function.Call(GTA.Native.Hash.SET_ENTITY_VISIBLE, i, visible, unkb);
+							}
+
+							if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_ENTITY_ON_SCREEN, i))
+							{
+								Vector2 p;
+								//World3DToScreen2D(i.Position, out p);
+								//GTA.UI.Notification.Show("get 2d:" + p.ToString());
+							}
+						}
+
+						break;
+					}
+				case (2):
+					{
+						var peds = World.GetAllPeds();
+						foreach (var i in peds)
+						{
+							if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.DOES_ENTITY_EXIST, i))
+							{
+								GTA.Native.Function.Call(GTA.Native.Hash.SET_ENTITY_VISIBLE, i, visible, unkb);
+							}
+						}
+
+						break;
+					}
+				case (3):
+					{
+						var cars = World.GetAllVehicles();
+						foreach (var i in cars)
+						{
+							if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.DOES_ENTITY_EXIST, i))
+							{
+								GTA.Native.Function.Call(GTA.Native.Hash.SET_ENTITY_VISIBLE, i.Handle, visible, unkb);
+								//GTA.Native.Function.Call(GTA.Native.Hash.SET_ENTITY_ALPHA, i, alpha_level, true);
+							}
+						}
+
+						break;
+					}
+			}
+			// start to build segmentation image
+
 		}
 		private void setVisibility(bool visible)
 		{
@@ -225,31 +285,57 @@ namespace ScriptInstance
 
 		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
-			if(e.KeyCode == Keys.T)
+			if (e.KeyCode == Keys.T)
 			{
 				recordData();
 			}
-			if(e.KeyCode == Keys.R)
+			if (e.KeyCode == Keys.R)
 			{
 				unpause();
 			}
-			if(e.KeyCode == Keys.E)
-			{
-				setVisibility(false);
-			}
-			if(e.KeyCode == Keys.Y)
-			{
-				setVisibility(true);
-			}
-			if(e.KeyCode == Keys.U)
+			if (e.KeyCode == Keys.U)
 			{
 				GTA.Native.Function.Call((GTA.Native.Hash.SET_MISSION_NAME), true, "test");
 			}
-			if(e.KeyCode == Keys.I)
+			if (e.KeyCode == Keys.I)
 			{
 				InstantiateScript<mission01>();
 			}
+			switch (e.KeyCode)
+			{
+				case (Keys.NumPad1):
+					{
+						setVisibility(false, 1);
+						break;
+					}
+				case (Keys.NumPad2):
+					{
+						setVisibility(false, 2);
+						break;
+					}
+				case (Keys.NumPad3):
+					{
+						setVisibility(false, 3);
+						break;
+					}
+				case (Keys.NumPad4):
+					{
+						setVisibility(true, 1);
+						break;
+					}
+				case (Keys.NumPad5):
+					{
+						setVisibility(true, 2);
+						break;
+					}
+				case (Keys.NumPad6):
+					{
+						setVisibility(true, 3);
+						break;
+					}
+			}
 		}
+		
 		private void recordData()
 		{
 			pause();
@@ -329,4 +415,5 @@ namespace ScriptInstance
 			ped?.Delete();
 		}
 	}
+	
 }
