@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 //using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GTA.Math;
@@ -17,6 +18,7 @@ namespace GTA
 		enum MissionState
 		{
 			NotStarted,
+			Display,
 			ExitVehicle,
 			WalkToDog,
 			CommandDogToFollow,
@@ -31,10 +33,15 @@ namespace GTA
 		private bool isMissionSucceed = false;
 		private Vehicle vehicle;
 		private Vector3 carPos = new Vector3(0, 0, 0);
-		private Vector3 dogPos = new Vector3(0, 0, 0);
+		private Vector3 dogPos1 = new Vector3(0, 0, 0);
+		private Vector3 dogPos2 = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
+		private Vector3 personPos1 = new Vector3(0, 0, 0);
+		private Vector3 personPos2 = new Vector3(0, 0, 0);
+		private Vector3 personPos3 = new Vector3(0, 0, 0);
 		private Model dogModel;
-		private Ped dog;
+		private Model personModel;
+		private Ped dog, dog2, person1, person2, person3;
 		private int counter = 0;
 		private bool isLoaded = false;
 		private bool walkToDogState = false;
@@ -52,12 +59,80 @@ namespace GTA
 			Tick += OnTick;
 			KeyDown += OnKeyDown;
 		}
-
 		public override void load()
 		{
 			GTA.UI.Notification.Show("load mission_dog_follow...");
 			Ped player = Game.Player.Character;
-			changePos(ref playerPos, -946, 37, 49);
+			
+			changePos(ref playerPos, -1935, 588, 121);
+			changePos(ref carPos, -1940, 582, 119.3f);
+			changePos(ref dogPos1, -1946, 592, 120);
+			changePos(ref dogPos2, -1939, 584, 119);
+			// 按序号增加了3个默认person位置。坐标和面向角度已设置好
+			changePos(ref personPos1, -1932, 593, 121);
+			changePos(ref personPos2, -1946, 590, 119);/*原本设置的目的地坐标：-1938.1f, 582, 119.5f*/
+			changePos(ref personPos3, -1939, 583, 119);
+			// 设置游戏时间为下午3点30分
+			World.CurrentTimeOfDay = new TimeSpan(15, 30, 0);
+			// 设置天气为晴朗
+			World.Weather = Weather.Clear;
+
+			Game.Player.Character.Position = playerPos;
+			foreach (Ped ped in World.GetNearbyPeds(Game.Player.Character, 20.0f))
+			{
+				if (ped != Game.Player.Character) // 不删除玩家角色
+				{
+					ped.Delete();
+				}
+			}
+			foreach (Vehicle vehicle in World.GetNearbyVehicles(Game.Player.Character, 20.0f))
+			{
+				vehicle.Delete();
+			}
+
+			vehicle = World.CreateVehicle(VehicleHash.BestiaGTS, carPos);
+			vehicle.Heading = 60;
+			dogModel = new Model(PedHash.Chop);
+			if (dogModel.IsValid)
+			{
+				dogModel.Request(500);
+				dog = World.CreatePed(dogModel, dogPos1);
+				dog.Heading = 180;
+
+				dog2 = World.CreatePed(dogModel, dogPos2);
+				dog2.Heading = 180;
+				if (dog == null || dog2 == null)
+				{
+					GTA.UI.Notification.Show("CHOP CREATE FAILED !");
+				}
+			}
+
+			Thread.Sleep(500);
+			personModel = new Model(PedHash.Michael);
+			if (personModel.IsValid)
+			{
+				personModel.Request(500);
+				person1 = World.CreatePed(personModel, personPos1);
+				person1.Heading = 92.2199F;
+
+				person2 = World.CreatePed(personModel, personPos2);
+				person2.Heading = 0F;
+				/*从设置的地方走向狗并交互*/
+				//Function.Call(Hash.TASK_CHAT_TO_PED, person2.Handle, dog.Handle, -1, 0f, 0f, 0f, 0f, 0f);
+				
+				person3 = World.CreatePed(personModel, personPos3);
+				person3.Heading = 162.963F;
+				
+			}
+			isLoaded = true;
+		}
+
+		/*
+		public override void load()
+		{
+			GTA.UI.Notification.Show("load mission_dog_follow...");
+			Ped player = Game.Player.Character;
+			changePos(ref playerPos, -1947, -592, 120);
 			changePos(ref carPos, -951, 32, 48);
 			changePos(ref dogPos, -948, 45, 49);
 
@@ -89,7 +164,7 @@ namespace GTA
 			isLoaded = false;
 
 		}
-
+		*/
 		public override void destroy()
 		{
 			
@@ -100,6 +175,11 @@ namespace GTA
 			if (dog != null)
 			{
 				dog.Delete();
+				dogModel.MarkAsNoLongerNeeded();
+			}
+			if (dog2 != null)
+			{
+				dog2.Delete();
 				dogModel.MarkAsNoLongerNeeded();
 			}
 			GTA.UI.Notification.Show("mission_dog_follow destroy!");
@@ -134,15 +214,27 @@ namespace GTA
 					{
 						return;
 					}
-					if (counter < pause)
+					if (counter < 10)
 					{
 						counter++;
 						return;
 					}
-					curState = MissionState.WalkToDog;
-					GTA.UI.Notification.Show("Mission started. Walk to the dog.");
+					curState = MissionState.Display;
+					GTA.UI.Notification.Show("Mission started. Display.");
 					counter = 0;
 
+					break;
+				//場景展示
+				case MissionState.Display:
+					if (counter < 1000)
+					{
+						counter++;
+						return;
+					}
+					person1.Task.PlayAnimation("amb@world_human_stand_impatient@male@no_sign@base", "base", 1.0f, -1, 0.01f );
+					person2.Task.PlayAnimation("amb@world_human_guard_patrol@male@idle_b", "idle_e", 1.0f, -1, 0.01f);
+					person3.Task.PlayAnimation("amb@prop_human_parking_meter@male@idle_a", "idle_a", 1.0f, -1, 0.01f);
+					counter = 0;
 					break;
 				case MissionState.ExitVehicle:
 					//action

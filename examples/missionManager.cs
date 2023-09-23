@@ -90,7 +90,11 @@ namespace GTA
 		{
 			//missions.Add(InstantiateScript<mission01>());
 			//missions.Add(InstantiateScript<mission_cross_intersection>());
+			//missions.Add(InstantiateScript<mission_boat>());
+			//missions.Add(InstantiateScript<mission_stop_fighting>());
 			missions.Add(InstantiateScript<mission_dog_follow>());
+			
+			
 		}
 		private void clearMissions()
 		{
