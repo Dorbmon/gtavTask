@@ -86,6 +86,12 @@ namespace GTA
 			}
 		}
 
+		public static bool walkToPos(Vector3 pos)
+		{
+			Game.Player.Character.Task.GoTo(pos);
+			return true;
+		}
+
 		public bool didHurtAnyOne()
 		{
 			// there is no method found to get hurt record on others, so get ped and then check them
@@ -115,17 +121,23 @@ namespace GTA
 			return true;
 			//Console.WriteLine("walkToEntity, go to target");
 		}
-		/**
-		 * swim is not supported now
-		public void swimTo(int hash)
+		
+		// swim is not supported now
+		public static bool swimTo(Entity target)
 		{
 			Ped player = Game.Player.Character;
-			if (!player.IsSwimming && player.IsInWater)
+			if (player == null)
 			{
-				//player.Task.Swim(); swim task doesn't exist.
+				return false;
 			}
+			if (player.IsInWater)
+			{
+				player.Task.RunTo(target.Position);
+				return true;
+			}
+			return false;
 		}
-		*/
+		
 
 		public void driveVehicleForward()
 		{
@@ -142,7 +154,7 @@ namespace GTA
 
 		public static bool getOnNearbyVehicle()
 		{
-			Vehicle closest = World.GetClosestVehicle(Game.Player.Character.Position, 5);
+			Vehicle closest = World.GetClosestVehicle(Game.Player.Character.Position, 10);
 			if (closest != null && closest.IsDriveable)
 			{
 				Game.Player.Character.Task.EnterVehicle(closest, GTA.VehicleSeat.Driver);
@@ -336,7 +348,7 @@ namespace GTA
 			{
 				float distanceToPlayer = target.Position.DistanceTo(player.Position);
 
-				target.Task.FollowToOffsetFromEntity(player, new Vector3(0.2f, 0.3f, 0.0f), 2.0f);
+				target.Task.FollowToOffsetFromEntity(player, new Vector3(0.2f, 0.3f, 0.0f), 1.0f);
 				return true;
 			}
 			return false;
@@ -388,6 +400,7 @@ namespace GTA
 
 				if (distance1 <= 5.0f || distance2 <= 5.0f)
 				{
+					player.Task.PlayAnimation("anim@heists@ornate_bank@chat_manager", "average_clothes");
 					target1.Task.ClearAllImmediately();
 					target2.Task.ClearAllImmediately();
 					return true;

@@ -29,7 +29,7 @@ namespace GTA
 		private Vector3 boatPos = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
 		private Vector3 shorePos = new Vector3(0, 0, 0);
-		private int counter = 0;
+		private int counter = 0, swim_counter = 0;
 		private bool isLoaded = false;
 		private bool swimToBoatState = false;
 		private bool driveToShoreState = false;
@@ -53,11 +53,16 @@ namespace GTA
 			changePos(ref boatPos, -2075, -694, 0);
 			changePos(ref shorePos, -2030, -670, 0);
 
-			// 设置游戏时间为下午2点30分
+			Game.Player.Character.Position = playerPos;
+			foreach (Vehicle vehicle in World.GetNearbyVehicles(Game.Player.Character, 100.0f))
+			{
+				vehicle.Delete();
+			}
+			// 设置游戏时间为下午5点30分
 			World.CurrentTimeOfDay = new TimeSpan(17, 30, 0);
 			World.Weather = Weather.Clear;  // 设置天气为晴朗
 
-			boat = World.CreateVehicle(VehicleHash.PatrolBoat, boatPos);
+			boat = World.CreateVehicle(VehicleHash.Speeder, boatPos);
 			boat.Heading = 30;
 
 			//if (vehicle !=  null)
@@ -65,7 +70,7 @@ namespace GTA
 			//	player.SetIntoVehicle(vehicle, VehicleSeat.Driver);
 			//}
 
-			Game.Player.Character.Position = playerPos;
+			
 
 
 			isLoaded = true;
@@ -116,7 +121,7 @@ namespace GTA
 						return;
 					}
 					curState = MissionState.SwimToBoat;
-					GTA.UI.Notification.Show("Mission started. Walk to the dog.");
+					GTA.UI.Notification.Show("Mission started. Swim to boat.");
 					counter = 0;
 
 					break;
@@ -143,7 +148,7 @@ namespace GTA
 					}
 					float distance = Vector3.Distance(player.Position, boat.Position);
 					GTA.UI.Screen.ShowSubtitle($"distance: {distance}");
-					if (distance < 10.0f)
+					if (distance < 5.0f)
 					{
 						curState = MissionState.EnterBoat;
 						GTA.UI.Notification.Show("Swim to boat completed. Enter boat.");
@@ -151,10 +156,11 @@ namespace GTA
 
 					if (distance > 2.0f)
 					{
-						curState = MissionState.EnterBoat;
+						//curState = MissionState.EnterBoat;
 						swimToBoatState = false;
 						GTA.UI.Notification.Show("Swim to boat again. Enter boat.");
 					}
+					swim_counter++;
 					counter = 0;
 					break;
 				case MissionState.EnterBoat:
@@ -192,10 +198,16 @@ namespace GTA
 					break;
 
 				case MissionState.Completed:
+					if (counter < pause)
+					{
+						counter++;
+						return;
+					}
 					if (boat.Position.DistanceTo(shorePos) < 5.0f && player.CurrentVehicle == boat)
 					{
 						isMissionSucceed = true;
 					}
+					counter = 0;
 					break;
 			}
 		}

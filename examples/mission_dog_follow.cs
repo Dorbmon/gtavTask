@@ -67,11 +67,11 @@ namespace GTA
 			changePos(ref playerPos, -1935, 588, 121);
 			changePos(ref carPos, -1940, 582, 119.3f);
 			changePos(ref dogPos1, -1946, 592, 120);
-			changePos(ref dogPos2, -1939, 584, 119);
+			//changePos(ref dogPos2, -1939, 584, 119);
 			// 按序号增加了3个默认person位置。坐标和面向角度已设置好
-			changePos(ref personPos1, -1932, 593, 121);
-			changePos(ref personPos2, -1946, 590, 119);/*原本设置的目的地坐标：-1938.1f, 582, 119.5f*/
-			changePos(ref personPos3, -1939, 583, 119);
+			//changePos(ref personPos1, -1932, 593, 121);
+			//changePos(ref personPos2, -1946, 590, 119);/*原本设置的目的地坐标：-1938.1f, 582, 119.5f*/
+			//changePos(ref personPos3, -1939, 583, 119);
 			// 设置游戏时间为下午3点30分
 			World.CurrentTimeOfDay = new TimeSpan(15, 30, 0);
 			// 设置天气为晴朗
@@ -98,15 +98,16 @@ namespace GTA
 				dogModel.Request(500);
 				dog = World.CreatePed(dogModel, dogPos1);
 				dog.Heading = 180;
-
+				/*
 				dog2 = World.CreatePed(dogModel, dogPos2);
 				dog2.Heading = 180;
 				if (dog == null || dog2 == null)
 				{
 					GTA.UI.Notification.Show("CHOP CREATE FAILED !");
 				}
+				*/
 			}
-
+			/*
 			Thread.Sleep(500);
 			personModel = new Model(PedHash.Michael);
 			if (personModel.IsValid)
@@ -117,13 +118,13 @@ namespace GTA
 
 				person2 = World.CreatePed(personModel, personPos2);
 				person2.Heading = 0F;
-				/*从设置的地方走向狗并交互*/
+				//从设置的地方走向狗并交互
 				//Function.Call(Hash.TASK_CHAT_TO_PED, person2.Handle, dog.Handle, -1, 0f, 0f, 0f, 0f, 0f);
 				
 				person3 = World.CreatePed(personModel, personPos3);
 				person3.Heading = 162.963F;
-				
 			}
+			*/
 			isLoaded = true;
 		}
 
@@ -219,8 +220,8 @@ namespace GTA
 						counter++;
 						return;
 					}
-					curState = MissionState.Display;
-					GTA.UI.Notification.Show("Mission started. Display.");
+					curState = MissionState.ExitVehicle;
+					GTA.UI.Notification.Show("Mission started. Exit Vehicle.");
 					counter = 0;
 
 					break;

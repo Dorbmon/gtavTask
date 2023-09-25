@@ -49,7 +49,7 @@ namespace GTA
 		{
 			GTA.UI.Notification.Show("load mission_stop_fighting...");
 			Ped player = Game.Player.Character;
-			changePos(ref playerPos, -2015, -657, 3);
+			changePos(ref playerPos, -1997, -631, 3);
 			changePos(ref npc1Pos, -1998, -613, 5);
 			changePos(ref npc2Pos, -2010, -620, 4);
 
@@ -58,7 +58,7 @@ namespace GTA
 			World.Weather = Weather.Clear;  // 设置天气为晴朗
 
 			npc1 = World.CreatePed(PedHash.Beach01AFY, npc1Pos);
-			npc2 = World.CreatePed(PedHash.Beach02AMM, npc2Pos);
+			npc2 = World.CreatePed(PedHash.Beach04AMY, npc2Pos);
 
 			if (npc1.IsAlive && npc2.IsAlive)
 			{
