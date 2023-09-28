@@ -12,13 +12,15 @@ using SHVDN;
 
 namespace GTA
 {
-	internal class mission_stop_fighting : mission
+	internal class mission_stop_fighting2 : mission
 	{
 		enum MissionState
 		{
 			NotStarted,
-			RunToPed,
+			ClimbFence,
+			WalkToPed,
 			StopFight,
+			DriveBackToShore,
 			Completed
 		}
 
@@ -38,7 +40,7 @@ namespace GTA
 
 
 
-		public mission_stop_fighting()
+		public mission_stop_fighting2()
 		{
 			Tick += OnTick;
 			KeyDown += OnKeyDown;
@@ -48,14 +50,17 @@ namespace GTA
 		{
 			GTA.UI.Notification.Show("load mission_stop_fighting...");
 			Ped player = Game.Player.Character;
-			changePos(ref playerPos, -1997, -631, 3);
-			changePos(ref npc1Pos, -1998, -613, 5);
-			changePos(ref npc2Pos, -2010, -620, 4);
+			changePos(ref playerPos, -1449, -875, 10);
+			changePos(ref npc1Pos, -1460, -900, 11);
+			changePos(ref npc2Pos, -1466, -897, 10);
 
 			// 设置游戏时间为下午2点30分
 			World.CurrentTimeOfDay = new TimeSpan(17, 30, 0);
 			World.Weather = Weather.Clear;  // 设置天气为晴朗
+
+
 			Game.Player.Character.Position = playerPos;
+			Game.Player.Character.Heading = 180;
 			foreach (Ped ped in World.GetNearbyPeds(Game.Player.Character, 100.0f))
 			{
 				if (ped != Game.Player.Character) // 不删除玩家角色
@@ -67,8 +72,8 @@ namespace GTA
 			{
 				vehicle.Delete();
 			}
-			npc1 = World.CreatePed(PedHash.Beach01AFY, npc1Pos);
-			npc2 = World.CreatePed(PedHash.Beach04AMY, npc2Pos);
+			npc1 = World.CreatePed(PedHash.OgBoss01AMM, npc1Pos);
+			npc2 = World.CreatePed(PedHash.AfriAmer01AMM, npc2Pos);
 
 			if (npc1.IsAlive && npc2.IsAlive)
 			{
@@ -92,7 +97,7 @@ namespace GTA
 			}
 			if (npc2 != null)
 			{
-				npc2.Delete();	
+				npc2.Delete();
 			}
 
 		}
@@ -130,14 +135,22 @@ namespace GTA
 						counter++;
 						return;
 					}
-					curState = MissionState.RunToPed;
-					GTA.UI.Notification.Show("Mission started. Run to the ped.");
+					curState = MissionState.ClimbFence;
+					GTA.UI.Notification.Show("Mission started. Climb fence.");
+					counter = 0;
+					break;
+
+
+				case MissionState.ClimbFence:
+					PlayerActions.climbUp();
+					curState = MissionState.WalkToPed;
+					GTA.UI.Notification.Show("Climb fence completed. Walk to the ped.");
 					counter = 0;
 
 					break;
 
 
-				case MissionState.RunToPed:
+				case MissionState.WalkToPed:
 					if (counter < pause)
 					{
 						counter++;
@@ -206,12 +219,12 @@ namespace GTA
 		bool isFighting(Ped npc1, Ped npc2)
 		{
 			if (npc1.IsDead || npc2.IsDead)
-				return false; 
+				return false;
 
 			if (npc1.IsInCombatAgainst(npc2) || npc2.IsInCombatAgainst(npc1))
-				return true; 
+				return true;
 
-			return false; 
+			return false;
 		}
 	}
 }

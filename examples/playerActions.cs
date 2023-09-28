@@ -130,12 +130,10 @@ namespace GTA
 			{
 				return false;
 			}
-			if (player.IsInWater)
-			{
+		
 				player.Task.RunTo(target.Position);
 				return true;
-			}
-			return false;
+
 		}
 		
 
@@ -185,13 +183,13 @@ namespace GTA
 			return true;
 		}
 
-		public static bool driveTo(Vehicle tool, Vector3 pos)
+		public static bool driveTo(Vehicle tool, Entity target)
 		{
-			if (pos == null)
+			if (target == null)
 			{
 				return false;
 			}
-			Game.Player.Character.Task.DriveTo(tool, pos, 5.0f, 10.0f);
+			Game.Player.Character.Task.DriveTo(tool, target.Position, 5.0f, 10.0f);
 			return true;
 		}
 
@@ -226,7 +224,7 @@ namespace GTA
 
 
 		//jump up the object in front of the player
-		public void climbUp()
+		public static void climbUp()
 		{
 			Ped player = Game.Player.Character;
 			player.Task.Climb();

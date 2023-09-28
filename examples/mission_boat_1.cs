@@ -12,11 +12,12 @@ using SHVDN;
 
 namespace GTA
 {
-	internal class mission_boat : mission
+	internal class mission_boat1 : mission
 	{
 		enum MissionState
 		{
 			NotStarted,
+			runToSpot,
 			SwimToBoat,
 			EnterBoat,
 			DriveBackToShore,
@@ -25,14 +26,15 @@ namespace GTA
 
 		private MissionState curState = MissionState.NotStarted;
 		private bool isMissionSucceed = false;
-		private Vehicle boat;
-		private Vehicle endtarget;
+		private Vehicle boat, spot, endtarget;
 		private Vector3 boatPos = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
 		private Vector3 shorePos = new Vector3(0, 0, 0);
+		private Vector3 spotPos = new Vector3(0, 0, 0);
 		private int counter = 0, swim_counter = 0;
 		private bool isLoaded = false;
 		private bool swimToBoatState = false;
+		private bool runToSpotState = false;
 		private bool driveToShoreState = false;
 		private bool playerInBoatState = false;
 		private int pause = 150;
@@ -40,7 +42,7 @@ namespace GTA
 
 
 
-		public mission_boat()
+		public mission_boat1()
 		{
 			Tick += OnTick;
 			KeyDown += OnKeyDown;
@@ -50,23 +52,26 @@ namespace GTA
 		{
 			GTA.UI.Notification.Show("load mission_boat...");
 			Ped player = Game.Player.Character;
-			changePos(ref playerPos, -2015, -657, 3);
-			changePos(ref boatPos, -2075, -694, 0);
-			changePos(ref shorePos, -2030, -670, 0);
+			changePos(ref playerPos, -1839, -912, 2);
+			changePos(ref spotPos, -1786, -1012, 1);
+			changePos(ref boatPos, -1866, -1135, 0);
+			changePos(ref shorePos, -1822, -955, 0);
 
 			Game.Player.Character.Position = playerPos;
-			foreach (Vehicle vehicle in World.GetNearbyVehicles(Game.Player.Character, 100.0f))
+			foreach (Vehicle vehicle in World.GetNearbyVehicles(Game.Player.Character, 1000.0f))
 			{
 				vehicle.Delete();
 			}
 			// 设置游戏时间为下午5点30分
-			World.CurrentTimeOfDay = new TimeSpan(17, 30, 0);
+			World.CurrentTimeOfDay = new TimeSpan(12, 30, 0);
 			World.Weather = Weather.Clear;  // 设置天气为晴朗
 
-			boat = World.CreateVehicle(VehicleHash.Speeder, boatPos);
+			boat = World.CreateVehicle(VehicleHash.Marquis, boatPos);
 			boat.Heading = 30;
-			endtarget = World.CreateVehicle(VehicleHash.Seashark, shorePos);
-			//endtarget = World.CreateCheckpoint(CheckpointIcon.CylinderTripleArrow, shorePos, new Vector3(0, 0, 0), 10, System.Drawing.Color.Red);
+
+			spot = World.CreateVehicle(VehicleHash.SeaSparrow, spotPos);
+
+			endtarget = World.CreateVehicle(VehicleHash.Phoenix, shorePos);
 			//if (vehicle !=  null)
 			//{
 			//	player.SetIntoVehicle(vehicle, VehicleSeat.Driver);
@@ -122,12 +127,37 @@ namespace GTA
 						counter++;
 						return;
 					}
-					curState = MissionState.SwimToBoat;
-					GTA.UI.Notification.Show("Mission started. Swim to boat.");
+					curState = MissionState.runToSpot;
+					GTA.UI.Notification.Show("Mission started. Run to spot.");
 					counter = 0;
 
 					break;
-				
+
+				case MissionState.runToSpot:
+					if (counter < pause)
+					{
+						counter++;
+						return;
+					}
+
+					//Console.WriteLine("");
+					if (boat != null)
+					{
+						if (!runToSpotState) runToSpotState = PlayerActions.runTo(spot);
+					}
+					else
+					{
+						GTA.UI.Screen.ShowSubtitle($"spot is null!");
+					}
+					float spot_distance = Vector3.Distance(player.Position, spot.Position);
+					
+					if (spot_distance < 10.0f)
+					{
+						curState = MissionState.SwimToBoat;
+						GTA.UI.Notification.Show("run to spot completed. SwimToBoat.");
+					}
+					counter = 0;
+					break;
 
 				case MissionState.SwimToBoat:
 					if (counter < pause)
@@ -142,7 +172,7 @@ namespace GTA
 					//Console.WriteLine("");
 					if (boat != null)
 					{
-						if (!swimToBoatState) swimToBoatState = PlayerActions.runTo(boat);
+						if (!swimToBoatState) swimToBoatState = PlayerActions.swimTo(boat);
 					}
 					else
 					{
@@ -205,7 +235,7 @@ namespace GTA
 						counter++;
 						return;
 					}
-					if (boat.Position.DistanceTo(shorePos) < 10.0f && player.CurrentVehicle == boat)
+					if (boat.Position.DistanceTo(shorePos) < 5.0f && player.CurrentVehicle == boat)
 					{
 						isMissionSucceed = true;
 					}

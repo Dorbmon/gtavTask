@@ -12,12 +12,13 @@ using SHVDN;
 
 namespace GTA
 {
-	internal class mission_stop_fighting : mission
+	internal class mission_stop_fighting1 : mission
 	{
 		enum MissionState
 		{
 			NotStarted,
-			RunToPed,
+			RunToSpot,
+			WalkToPed,
 			StopFight,
 			Completed
 		}
@@ -27,10 +28,13 @@ namespace GTA
 		private Vector3 npc1Pos = new Vector3(0, 0, 0);
 		private Vector3 npc2Pos = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
+		private Vector3 spotPos = new Vector3(0, 0, 0);
 		private Ped npc1, npc2;
+		private Vehicle spot;
 		private int counter = 0;
 		private bool isLoaded = false;
 		private bool walkToPedState = false;
+		private bool runToSpotState = false;
 		private bool driveToShoreState = false;
 		private bool playerInBoatState = false;
 		private int pause = 150;
@@ -38,7 +42,7 @@ namespace GTA
 
 
 
-		public mission_stop_fighting()
+		public mission_stop_fighting1()
 		{
 			Tick += OnTick;
 			KeyDown += OnKeyDown;
@@ -48,13 +52,15 @@ namespace GTA
 		{
 			GTA.UI.Notification.Show("load mission_stop_fighting...");
 			Ped player = Game.Player.Character;
-			changePos(ref playerPos, -1997, -631, 3);
-			changePos(ref npc1Pos, -1998, -613, 5);
-			changePos(ref npc2Pos, -2010, -620, 4);
+			changePos(ref playerPos, -927, -1074, 3);
+			changePos(ref npc1Pos, -875, -1072, 2);
+			changePos(ref npc2Pos, -877, -1066, 2);
+			changePos(ref spotPos, -897, -1063, 2);
 
 			// 设置游戏时间为下午2点30分
-			World.CurrentTimeOfDay = new TimeSpan(17, 30, 0);
+			World.CurrentTimeOfDay = new TimeSpan(14, 30, 0);
 			World.Weather = Weather.Clear;  // 设置天气为晴朗
+
 			Game.Player.Character.Position = playerPos;
 			foreach (Ped ped in World.GetNearbyPeds(Game.Player.Character, 100.0f))
 			{
@@ -67,8 +73,8 @@ namespace GTA
 			{
 				vehicle.Delete();
 			}
-			npc1 = World.CreatePed(PedHash.Beach01AFY, npc1Pos);
-			npc2 = World.CreatePed(PedHash.Beach04AMY, npc2Pos);
+			npc1 = World.CreatePed(PedHash.Beach01AMM, npc1Pos);
+			npc2 = World.CreatePed(PedHash.Genfat01AMM, npc2Pos);
 
 			if (npc1.IsAlive && npc2.IsAlive)
 			{
@@ -77,7 +83,7 @@ namespace GTA
 			}
 
 			
-
+			spot = World.CreateVehicle(VehicleHash.Slamtruck, spotPos);
 
 			isLoaded = true;
 
@@ -92,7 +98,7 @@ namespace GTA
 			}
 			if (npc2 != null)
 			{
-				npc2.Delete();	
+				npc2.Delete();
 			}
 
 		}
@@ -130,14 +136,32 @@ namespace GTA
 						counter++;
 						return;
 					}
-					curState = MissionState.RunToPed;
-					GTA.UI.Notification.Show("Mission started. Run to the ped.");
+					curState = MissionState.RunToSpot;
+					GTA.UI.Notification.Show("Mission started. Run to spot.");
+					counter = 0;
+					break;
+
+				case MissionState.RunToSpot:
+					if (counter < pause)
+					{
+						counter++;
+						return;
+					}
+					if (!runToSpotState) runToSpotState = PlayerActions.runTo(spot);
+					float run_dist = Vector3.Distance(player.Position, spot.Position);
+					GTA.UI.Screen.ShowSubtitle($"distance: {run_dist}");
+					if (run_dist < 5.0f)
+					{
+						curState = MissionState.WalkToPed;
+						GTA.UI.Notification.Show("Mission started. Walk to the ped.");
+					}
+					
 					counter = 0;
 
 					break;
 
 
-				case MissionState.RunToPed:
+				case MissionState.WalkToPed:
 					if (counter < pause)
 					{
 						counter++;
@@ -206,12 +230,12 @@ namespace GTA
 		bool isFighting(Ped npc1, Ped npc2)
 		{
 			if (npc1.IsDead || npc2.IsDead)
-				return false; 
+				return false;
 
 			if (npc1.IsInCombatAgainst(npc2) || npc2.IsInCombatAgainst(npc1))
-				return true; 
+				return true;
 
-			return false; 
+			return false;
 		}
 	}
 }
