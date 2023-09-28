@@ -38,6 +38,7 @@ namespace GTA
 		private bool driveToSpotState = false;
 		private bool playerInBoatState = false;
 		private int pause = 150;
+		private int endPause = 2400;
 		private bool isPaused = false;
 
 

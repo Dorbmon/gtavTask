@@ -52,6 +52,7 @@ namespace GTA
 		private bool dogOnVehicle = false;
 		private bool playerInVehicleState = false;
 		private int pause = 150;
+		private int endPause = 2400;
 		private bool isPaused = false;
 
 
@@ -217,7 +218,7 @@ namespace GTA
 					{
 						return;
 					}
-					if (counter < 10)
+					if (counter < pause)
 					{
 						counter++;
 						return;
@@ -395,6 +396,11 @@ namespace GTA
 					break;
 
 				case MissionState.Completed:
+					if (counter < pause)
+					{
+						counter++;
+						return;
+					}
 					if (player.CurrentVehicle == dog.CurrentVehicle)
 					{
 						isMissionSucceed = true;

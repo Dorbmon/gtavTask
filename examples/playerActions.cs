@@ -231,10 +231,10 @@ namespace GTA
 		}
 
 		//climb up the ladder
-		private void climbLadder()
+		private void climbLadderTo(Entity target)
 		{
 			Ped player = Game.Player.Character;
-			player.Task.ClimbLadder();
+			player.Task.GoTo(target);
 		}
 
 		//talk to someone (no real conversations, just gestures acting like the player is talking)
@@ -338,6 +338,18 @@ namespace GTA
 			return false;
 		}
 
+		public static bool letChase(Ped target)
+		{
+			Ped player = Game.Player.Character;
+
+			if (target.Exists() && player.Exists())
+			{
+
+				target.Task.FollowToOffsetFromEntity(player, new Vector3(0.2f, 0.2f, 0.0f), 2.0f);
+				return true;
+			}
+			return false;
+		}
 		public static bool letFollow(Ped target)
 		{
 			Ped player = Game.Player.Character;
@@ -406,6 +418,36 @@ namespace GTA
 			}
 			return false;
 		}
+		/*
+		public static bool getInNearbyDoor(Entity door)
+		{
+			var player = Game.Player.Character;
+			var nearbyEntities = World.GetNearbyEntities(player.Position, 10f);
+
+			foreach (var entity in nearbyEntities)
+			{
+				// 你需要找到判断实体是否为门的方法
+				// 也许你可以通过模型名称、散列值等来判定
+				if (isDoor(door))
+				{
+					// 尝试打开门，并观察结果
+					if  (tryOpenDoor(door))
+					{
+						// 如果门打开了，给玩家一个去那个位置的任务
+						player.Task.GoTo(door.Position);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		bool isDoor(Entity obj)
+		{
+			World.getclosest
+		}
+
+		*/
 
 	}
 }

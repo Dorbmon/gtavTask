@@ -91,7 +91,8 @@ namespace GTA
 			//missions.Add(InstantiateScript<mission01>());
 			//missions.Add(InstantiateScript<mission_cross_intersection>());
 
-			/*
+			//missions.Add(InstantiateScript<mission_chased>());
+			
 			missions.Add(InstantiateScript<mission_stop_fighting>());
 			missions.Add(InstantiateScript<mission_stop_fighting1>());
 			missions.Add(InstantiateScript<mission_stop_fighting2>());
@@ -106,19 +107,14 @@ namespace GTA
 			
 			missions.Add(InstantiateScript<mission_npc_follow>());
 			missions.Add(InstantiateScript<mission_npc_follow1>());
-			
 			missions.Add(InstantiateScript<mission_npc_follow2>());
-			
 			missions.Add(InstantiateScript<mission_npc_follow3>());
-			
 			missions.Add(InstantiateScript<mission_npc_follow4>());
 			
 			missions.Add(InstantiateScript<mission_boat>());
 			missions.Add(InstantiateScript<mission_boat1>());
 			missions.Add(InstantiateScript<mission_boat2>());
-			
 			missions.Add(InstantiateScript<mission_boat3>());
-			*/
 			missions.Add(InstantiateScript<mission_boat4>());
 			
 

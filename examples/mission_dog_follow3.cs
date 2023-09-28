@@ -54,6 +54,7 @@ namespace GTA
 		private bool dogOnVehicle = false;
 		private bool playerInVehicleState = false;
 		private int pause = 150;
+		private int endPause = 2400;
 		private bool isPaused = false;
 
 
@@ -137,44 +138,7 @@ namespace GTA
 			isLoaded = true;
 		}
 
-		/*
-		public override void load()
-		{
-			GTA.UI.Notification.Show("load mission_dog_follow...");
-			Ped player = Game.Player.Character;
-			changePos(ref playerPos, -1947, -592, 120);
-			changePos(ref carPos, -951, 32, 48);
-			changePos(ref dogPos, -948, 45, 49);
-
-			// 设置游戏时间为下午2点30分
-			World.CurrentTimeOfDay = new TimeSpan(7, 0, 0);
-			World.Weather = Weather.Clear;  // 设置天气为晴朗
-
-			vehicle = World.CreateVehicle(VehicleHash.BestiaGTS, carPos);
-			vehicle.Heading = 30;
-
-			//if (vehicle !=  null)
-			//{
-			//	player.SetIntoVehicle(vehicle, VehicleSeat.Driver);
-			//}
-
-			Game.Player.Character.Position = playerPos;
-
-			dogModel = new Model(PedHash.Chop);
-			if (dogModel.IsValid)
-			{
-				dogModel.Request(500);
-				dog = World.CreatePed(dogModel, dogPos);
-				if (dog == null)
-				{
-					GTA.UI.Notification.Show("CHOP CREATE FAILED !");
-				}
-			}
-
-			isLoaded = false;
-
-		}
-		*/
+		
 		public override void destroy()
 		{
 
@@ -224,7 +188,7 @@ namespace GTA
 					{
 						return;
 					}
-					if (counter < 10)
+					if (counter < pause)
 					{
 						counter++;
 						return;
@@ -431,6 +395,11 @@ namespace GTA
 					break;
 
 				case MissionState.Completed:
+					if (counter < pause)
+					{
+						counter++;
+						return;
+					}
 					if (player.CurrentVehicle == dog.CurrentVehicle)
 					{
 						isMissionSucceed = true;

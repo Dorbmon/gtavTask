@@ -41,6 +41,7 @@ namespace GTA
 		private bool walkToShelterState = false;
 		private bool npcFollowState = false;
 		private int pause = 150;
+		private int endPause = 2400;
 		private bool isPaused = false;
 
 
@@ -131,7 +132,7 @@ namespace GTA
 					{
 						return;
 					}
-					if (counter < 10)
+					if (counter < pause)
 					{
 						counter++;
 						return;
