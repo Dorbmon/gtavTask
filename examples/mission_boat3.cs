@@ -12,12 +12,11 @@ using SHVDN;
 
 namespace GTA
 {
-	internal class mission_boat1 : mission
+	internal class mission_boat3 : mission
 	{
 		enum MissionState
 		{
 			NotStarted,
-			runToSpot,
 			SwimToBoat,
 			EnterBoat,
 			DriveBackToShore,
@@ -26,24 +25,22 @@ namespace GTA
 
 		private MissionState curState = MissionState.NotStarted;
 		private bool isMissionSucceed = false;
-		private Vehicle boat, spot, endtarget;
+		private Vehicle boat, endtarget;
 		private Vector3 boatPos = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
 		private Vector3 shorePos = new Vector3(0, 0, 0);
-		private Vector3 spotPos = new Vector3(0, 0, 0);
 		private int counter = 0, swim_counter = 0;
 		private bool isLoaded = false;
 		private bool swimToBoatState = false;
-		private bool runToSpotState = false;
 		private bool driveToShoreState = false;
 		private bool playerInBoatState = false;
-		private int pause = 150;
+		private int pause = 50;
 		private int endPause = 2400;
 		private bool isPaused = false;
 
 
 
-		public mission_boat1()
+		public mission_boat3()
 		{
 			Tick += OnTick;
 			KeyDown += OnKeyDown;
@@ -53,10 +50,9 @@ namespace GTA
 		{
 			GTA.UI.Notification.Show("load mission_boat...");
 			Ped player = Game.Player.Character;
-			changePos(ref playerPos, -1839, -912, 2);
-			changePos(ref spotPos, -1786, -1012, 1);
-			changePos(ref boatPos, -1866, -1135, 0);
-			changePos(ref shorePos, -1822, -955, 0);
+			changePos(ref playerPos, -116, -2749, 2);
+			changePos(ref boatPos, -127, -2797, 0);
+			changePos(ref shorePos, -292, -2762, 0);
 
 			Game.Player.Character.Position = playerPos;
 			foreach (Vehicle vehicle in World.GetNearbyVehicles(Game.Player.Character, 1000.0f))
@@ -64,33 +60,32 @@ namespace GTA
 				vehicle.Delete();
 			}
 			// 设置游戏时间为下午5点30分
-			World.CurrentTimeOfDay = new TimeSpan(12, 30, 0);
+			World.CurrentTimeOfDay = new TimeSpan(14, 30, 0);
 			World.Weather = Weather.Clear;  // 设置天气为晴朗
 
 			boat = World.CreateVehicle(VehicleHash.Marquis, boatPos);
 			boat.Heading = 30;
 
-			spot = World.CreateVehicle(VehicleHash.SeaSparrow, spotPos);
+			endtarget = World.CreateVehicle(VehicleHash.Insurgent, shorePos);
+			
 
-			endtarget = World.CreateVehicle(VehicleHash.Phoenix, shorePos);
-			//if (vehicle !=  null)
-			//{
-			//	player.SetIntoVehicle(vehicle, VehicleSeat.Driver);
-			//}
-
-
-
-
-			isLoaded = true;
+			if (boat != null && endtarget != null)
+			{
+				isLoaded = true;
+				curState = MissionState.SwimToBoat;
+			}
 
 		}
 
 		public override void destroy()
 		{
-
 			if (boat != null)
 			{
 				boat.Delete();
+			}
+			if (endtarget != null)
+			{
+				endtarget.Delete();
 			}
 
 		}
@@ -107,7 +102,121 @@ namespace GTA
 				GTA.UI.Notification.Show("Mission Paused");
 			}
 		}
+
 		private void OnTick(object sender, EventArgs e)
+		{
+			//GTA.UI.Screen.ShowSubtitle($"state: {curState}");
+			swimTo(curState, boat);
+			getOn(curState, boat);
+			driveTo(curState, boat, endtarget);
+			checkResult(curState);
+		}
+
+
+		private void swimTo(MissionState state, Entity boat)
+		{
+			Ped player = Game.Player.Character;
+			if (state != MissionState.SwimToBoat)
+			{
+				return;
+			}
+		
+			if (boat != null)
+			{
+				if (!swimToBoatState) swimToBoatState = PlayerActions.swimTo(boat);
+			}
+			else
+			{
+				GTA.UI.Screen.ShowSubtitle($"boat is null!");
+			}
+			float distance = Vector3.Distance(player.Position, boat.Position);
+			GTA.UI.Screen.ShowSubtitle($"distance: {distance}");
+			if (distance < 5.0f)
+			{
+				curState = MissionState.EnterBoat;
+				GTA.UI.Notification.Show("Swim to boat completed. Enter boat.");
+			}
+
+			if (distance > 2.0f)
+			{
+				if (swim_counter == 200)
+				{
+					swim_counter = 0;
+					swimToBoatState = false;
+					GTA.UI.Notification.Show("Swim to boat again. Enter boat.");
+				}
+				//curState = MissionState.EnterBoat;
+				swim_counter++;
+
+			}
+			counter = 0;
+		}
+
+		private void getOn(MissionState state, Entity boat)
+		{
+			Ped player = Game.Player.Character;
+			if (state != MissionState.EnterBoat)
+			{
+				return;
+			}
+			
+			if (!playerInBoatState) playerInBoatState = PlayerActions.getOnVehicle(boat);
+
+			if (player.IsInVehicle())
+			{
+				curState = MissionState.DriveBackToShore;
+				GTA.UI.Notification.Show("Player enter boat completed. Drive back to shore.");
+			}
+			counter = 0;
+		}
+
+		private void driveTo(MissionState state, Entity boat, Entity endtarget)
+		{
+			Ped player = Game.Player.Character;
+			if (state != MissionState.DriveBackToShore)
+			{
+				return;
+			}
+			if (counter < pause)
+			{
+				counter++;
+				return;
+			}
+			if (!driveToShoreState) driveToShoreState = PlayerActions.driveTo(boat, endtarget);
+			float dist = Vector3.Distance(player.Position, shorePos);
+			GTA.UI.Screen.ShowSubtitle($"distance: {dist}");
+			if (dist < 5.0f)
+			{
+				curState = MissionState.Completed;
+				GTA.UI.Notification.Show("Drive back to shore completed. Mission completed.");
+			}
+			counter = 0;
+		}
+
+		private void checkResult(MissionState state)
+		{
+			Ped player = Game.Player.Character;
+			if (state != MissionState.Completed)
+			{
+				return;
+			}
+			if (counter < pause)
+			{
+				counter++;
+				return;
+			}
+			if (boat.Position.DistanceTo(shorePos) < 10.0f && player.CurrentVehicle == boat)
+			{
+				isMissionSucceed = true;
+			}
+			counter = 0;
+		}
+		private void changePos(ref Vector3 pos, float x, float y, float z)
+		{
+			pos = new Vector3(x, y, z);
+		}
+		/*
+		private void OnTick_case(object sender, EventArgs e)
 		{
 			Ped player = Game.Player.Character;
 			if (isPaused)
@@ -128,37 +237,12 @@ namespace GTA
 						counter++;
 						return;
 					}
-					curState = MissionState.runToSpot;
-					GTA.UI.Notification.Show("Mission started. Run to spot.");
+					curState = MissionState.SwimToBoat;
+					GTA.UI.Notification.Show("Mission started. Swim to boat.");
 					counter = 0;
 
 					break;
 
-				case MissionState.runToSpot:
-					if (counter < pause)
-					{
-						counter++;
-						return;
-					}
-
-					//Console.WriteLine("");
-					if (boat != null)
-					{
-						if (!runToSpotState) runToSpotState = PlayerActions.runTo(spot);
-					}
-					else
-					{
-						GTA.UI.Screen.ShowSubtitle($"spot is null!");
-					}
-					float spot_distance = Vector3.Distance(player.Position, spot.Position);
-					
-					if (spot_distance < 10.0f)
-					{
-						curState = MissionState.SwimToBoat;
-						GTA.UI.Notification.Show("run to spot completed. SwimToBoat.");
-					}
-					counter = 0;
-					break;
 
 				case MissionState.SwimToBoat:
 					if (counter < pause)
@@ -173,7 +257,7 @@ namespace GTA
 					//Console.WriteLine("");
 					if (boat != null)
 					{
-						if (!swimToBoatState) swimToBoatState = PlayerActions.swimTo(boat);
+						if (!swimToBoatState) swimToBoatState = PlayerActions.runTo(boat);
 					}
 					else
 					{
@@ -245,10 +329,7 @@ namespace GTA
 			}
 		}
 
-		private void changePos(ref Vector3 pos, float x, float y, float z)
-		{
-			pos = new Vector3(x, y, z);
-		}
+		*/
 
 	}
 }

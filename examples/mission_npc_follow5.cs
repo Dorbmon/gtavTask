@@ -13,14 +13,14 @@ using SHVDN;
 
 namespace GTA
 {
-	internal class mission_npc_follow3 : mission
+	internal class mission_npc_follow5 : mission
 	{
 		enum MissionState
 		{
 			NotStarted,
 			WalkToNpc,
+			WalkToSpot,
 			CommandNpcToFollow,
-			WalkToSpot1,
 			WalkToShelter,
 			CommandNpcToStop,
 			Completed
@@ -28,12 +28,14 @@ namespace GTA
 
 		private MissionState curState = MissionState.NotStarted;
 		private bool isMissionSucceed = false;
-		private Vehicle vehicle, spot1, endtarget;
+		private Vehicle vehicle;
 		private Vector3 shelterPos = new Vector3(0, 0, 0);
 		private Vector3 npcPos = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
 		private Vector3 spotPos = new Vector3(0, 0, 0);
 		private Ped npc;
+		private Ped spot;
+		private Vehicle endtarget;
 		private int counter = 0;
 		private bool isLoaded = false;
 		private bool walkToState = false;
@@ -47,7 +49,7 @@ namespace GTA
 
 
 
-		public mission_npc_follow3()
+		public mission_npc_follow5()
 		{
 			Tick += OnTick;
 			KeyDown += OnKeyDown;
@@ -57,59 +59,70 @@ namespace GTA
 			GTA.UI.Notification.Show("load mission_npc_follow...");
 			Ped player = Game.Player.Character;
 
-			changePos(ref playerPos, -462, -1706, 19);
-			changePos(ref shelterPos, -430, -1692, 20);
-			changePos(ref npcPos, -456, -1694, 18);
-			changePos(ref spotPos, -445, -1709, 18);
+			changePos(ref playerPos, -708, -974, 20);
+			changePos(ref shelterPos, -730, -919, 18);
+			changePos(ref npcPos, -700, -918, 19);
+			changePos(ref spotPos, -701, -971, 20);
 			// 设置游戏时间为下午3点30分
 			World.CurrentTimeOfDay = new TimeSpan(15, 30, 0);
 			// 设置天气为晴朗
 			World.Weather = Weather.Clear;
 
 			Game.Player.Character.Position = playerPos;
-			foreach (Ped ped in World.GetNearbyPeds(Game.Player.Character, 20.0f))
+			foreach (Ped ped in World.GetNearbyPeds(Game.Player.Character, 2000.0f))
 			{
 				if (ped != Game.Player.Character) // 不删除玩家角色
 				{
 					ped.Delete();
 				}
 			}
-			foreach (Vehicle vehicle in World.GetNearbyVehicles(Game.Player.Character, 20.0f))
+			foreach (Vehicle vehicle in World.GetNearbyVehicles(Game.Player.Character, 2000.0f))
 			{
 				vehicle.Delete();
 			}
 
 			npc = World.CreatePed(PedHash.Downtown01AFM, npcPos);
-			spot1 = World.CreateVehicle(VehicleHash.Alpha, spotPos);
-			endtarget = World.CreateVehicle(VehicleHash.Sentinel, shelterPos);
-			if (npc == null)
-			{
-				GTA.UI.Notification.Show("NPC CREATE FAILED !");
-			}
 
-			if (npc != null && spot1 != null && endtarget != null)
+			Model mModel = new Model(PedHash.Cat);
+			if (mModel.IsValid )
+			{
+				mModel.Request(1000);
+				if (mModel.IsLoaded)
+				{
+					spot = World.CreatePed(mModel, spotPos);
+				}
+			}
+			else
+			{
+				GTA.UI.Notification.Show("spot model invalid！");
+			}
+			endtarget = World.CreateVehicle(VehicleHash.Manana, shelterPos);
+
+			if (endtarget != null && npc != null && spot != null)
 			{
 				isLoaded = true;
-				curState = MissionState.WalkToNpc;
+				curState = MissionState.WalkToSpot;
 			}
-
-			
 		}
 
 		public override void destroy()
 		{
 
-			if (endtarget != null)
+			if (vehicle != null)
 			{
-				endtarget.Delete();
+				vehicle.Delete();
 			}
 			if (npc != null)
 			{
 				npc.Delete();
 			}
-			if (spot1 != null)
+			if (spot != null)
 			{
-				spot1.Delete();
+				spot.Delete();
+			}
+			if (endtarget != null)
+			{
+				endtarget.Delete();
 			}
 			GTA.UI.Notification.Show("mission_npc_follow destroy!");
 
@@ -127,7 +140,6 @@ namespace GTA
 				GTA.UI.Notification.Show("Mission Paused");
 			}
 		}
-
 		private void OnTick(object sender, EventArgs e)
 		{
 			/*
@@ -137,9 +149,9 @@ namespace GTA
 			WalkToShelter,
 			CommandNpcToStop,
 			 */
+			walkTo(curState, spot);
 			walkTo(curState, npc);
 			letFollow(curState, npc);
-			walkTo(curState, spot1);
 			walkTo(curState, endtarget);
 			letStopFollow(curState, npc);
 			checkResult(curState);
@@ -149,7 +161,7 @@ namespace GTA
 		{
 
 			Ped player = Game.Player.Character;
-			if (state != MissionState.WalkToNpc && state != MissionState.WalkToSpot1 && state != MissionState.WalkToShelter)
+			if (state != MissionState.WalkToNpc && state != MissionState.WalkToSpot && state != MissionState.WalkToShelter)
 			{
 				return;
 			}
@@ -162,9 +174,9 @@ namespace GTA
 			{
 				if (target != npc) return;
 			}
-			if (state == MissionState.WalkToSpot1)
+			if (state == MissionState.WalkToSpot)
 			{
-				if (target != spot1) return;
+				if (target != spot) return;
 			}
 			if (state == MissionState.WalkToShelter)
 			{
@@ -189,14 +201,14 @@ namespace GTA
 					curState = MissionState.CommandNpcToStop;
 					GTA.UI.Notification.Show("Walk to shelter completed. Command npc to stop.");
 					walkToState = false;
-					
+				
 				}
-				else if (state == MissionState.WalkToSpot1)
+				else if (state == MissionState.WalkToSpot)
 				{
-					curState = MissionState.WalkToShelter;
-					GTA.UI.Notification.Show("Walk to spot completed. Walk to shelter.");
+					curState = MissionState.WalkToNpc;
+					GTA.UI.Notification.Show("Walk to spot completed. Walk to npc.");
 					walkToState = false;
-					
+				
 				}
 			}
 			counter = 0;
@@ -221,8 +233,8 @@ namespace GTA
 			}
 			if (npcFollowState)
 			{
-				curState = MissionState.WalkToSpot1;
-				GTA.UI.Notification.Show("Command npc to follow completed. Walk to spot1.");
+				curState = MissionState.WalkToShelter;
+				GTA.UI.Notification.Show("Command npc to follow completed. Walk to shelter.");
 			}
 			counter = 0;
 		}
@@ -242,7 +254,7 @@ namespace GTA
 			float distance = Vector3.Distance(endtarget.Position, target.Position);
 			GTA.UI.Screen.ShowSubtitle($"state: {state.ToString()}, distance: {distance}");
 			Log.Message(Log.Level.Debug, "letStopFollow, ", " state: ", state.ToString(), " target: ", target.ToString(), " distance: ", distance.ToString());
-			if (distance < 3.0f)
+			if (distance < 5.0f)
 			{
 				Ped ped = target as Ped;
 				if (ped != null) { PlayerActions.letStopFollow(ped); }
@@ -271,7 +283,6 @@ namespace GTA
 			}
 			counter = 0;
 		}
-		/*
 		private void OnTick_case(object sender, EventArgs e)
 		{
 			Ped player = Game.Player.Character;
@@ -293,11 +304,43 @@ namespace GTA
 						counter++;
 						return;
 					}
-					curState = MissionState.WalkToNpc;
-					GTA.UI.Notification.Show("Mission started. WalkToNpc.");
+					curState = MissionState.WalkToSpot;
+					GTA.UI.Notification.Show("Mission started. Walk to cat");
 					counter = 0;
 
 					break;
+
+				case MissionState.WalkToSpot:
+					if (counter < pause)
+					{
+						counter++;
+						return;
+					}
+
+					//action
+					//PlayerActions.walkToModel(dogModel);
+					//Log.Message(Log.Level.Debug, "Switch to walktoDog successfully.");
+					//Console.WriteLine("");
+					if (npc != null)
+					{
+						if (!walkToSpotState) walkToSpotState = PlayerActions.walkTo(spot);
+					}
+					else
+					{
+						GTA.UI.Screen.ShowSubtitle($"npc is null!");
+					}
+
+
+					float dist = Vector3.Distance(player.Position, spot.Position);
+					GTA.UI.Screen.ShowSubtitle($"distance: {dist}");
+					if (dist < 2.0f)
+					{
+						curState = MissionState.WalkToNpc;
+						GTA.UI.Notification.Show("Walk to cat completed. walk to npc.");
+					}
+					counter = 0;
+					break;
+
 
 				case MissionState.WalkToNpc:
 					if (counter < pause)
@@ -337,36 +380,8 @@ namespace GTA
 						return;
 					}
 
-					float dist = Vector3.Distance(player.Position, npc.Position);
-					GTA.UI.Screen.ShowSubtitle($"distance: {dist}");
-
-					if (!npcFollowState) npcFollowState = PlayerActions.letFollow(npc);
-					if (!walkToSpotState) walkToSpotState = PlayerActions.walkTo(spot1);
-					/**
-					if (Vector3.Distance(player.Position, dog.Position) > 5.0f)
-					{
-						PlayerActions.standStill();
-						walk_to_vehicle_state = false;
-						dog_follow_state = false;
-					}
-					
-					if (Vector3.Distance(npc.Position, spotPos) < 5.0f)
-					{
-						curState = MissionState.WalkToShelter;
-						GTA.UI.Notification.Show("Command dog to follow completed. walk to shelter.");
-					}
-					counter = 0;
-					break;
-
-				case MissionState.WalkToShelter:
-					if (counter < pause)
-					{
-						counter++;
-						return;
-					}
-
-					float slt_dist = Vector3.Distance(player.Position, npc.Position);
-					GTA.UI.Screen.ShowSubtitle($"distance: {slt_dist}");
+					float dista = Vector3.Distance(player.Position, npc.Position);
+					GTA.UI.Screen.ShowSubtitle($"distance: {dista}");
 
 					if (!npcFollowState) npcFollowState = PlayerActions.letFollow(npc);
 					if (!walkToShelterState) walkToShelterState = PlayerActions.walkTo(endtarget);
@@ -377,15 +392,16 @@ namespace GTA
 						walk_to_vehicle_state = false;
 						dog_follow_state = false;
 					}
-					
+					*/
 					if (Vector3.Distance(npc.Position, shelterPos) < 5.0f)
 					{
 						PlayerActions.letStopFollow(npc);
 						curState = MissionState.Completed;
-						GTA.UI.Notification.Show("walk to shelter completed. Mission complete.");
+						GTA.UI.Notification.Show("Command dog to follow completed. Mission complete.");
 					}
-					counter = 0; 
+					counter = 0;
 					break;
+
 
 				case MissionState.Completed:
 					if (counter < pause)
@@ -402,7 +418,7 @@ namespace GTA
 					break;
 			}
 		}
-		*/
+
 		private void changePos(ref Vector3 pos, float x, float y, float z)
 		{
 			pos = new Vector3(x, y, z);

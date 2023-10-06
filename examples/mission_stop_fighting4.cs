@@ -17,9 +17,8 @@ namespace GTA
 		enum MissionState
 		{
 			NotStarted,
-			WalkToPed,
+			RunToPed,
 			StopFight,
-			DriveBackToShore,
 			Completed
 		}
 
@@ -31,6 +30,7 @@ namespace GTA
 		private Ped npc1, npc2;
 		private int counter = 0;
 		private bool isLoaded = false;
+		private bool walkToState = false;
 		private bool walkToPedState = false;
 		private bool driveToShoreState = false;
 		private bool playerInBoatState = false;
@@ -50,9 +50,9 @@ namespace GTA
 		{
 			GTA.UI.Notification.Show("load mission_stop_fighting...");
 			Ped player = Game.Player.Character;
-			changePos(ref playerPos, 491, -1742, 28);
-			changePos(ref npc1Pos, 479, -1780, 28);
-			changePos(ref npc2Pos, 477, -1779, 28);
+			changePos(ref playerPos, -106, -1626, 35);
+			changePos(ref npc1Pos, -84, -1614, 30);
+			changePos(ref npc2Pos, -92, -1620, 29);
 
 			// 设置游戏时间为下午2点30分
 			World.CurrentTimeOfDay = new TimeSpan(17, 30, 0);
@@ -70,20 +70,20 @@ namespace GTA
 			{
 				vehicle.Delete();
 			}
-			npc1 = World.CreatePed(PedHash.ArmBoss01GMM, npc1Pos);
-			npc2 = World.CreatePed(PedHash.FbiSuit01, npc2Pos);
-
+			npc1 = World.CreatePed(PedHash.OgBoss01AMM, npc1Pos);
+			npc2 = World.CreatePed(PedHash.Genfat02AMM, npc2Pos);
+			npc1.IsInvincible = true;
+			npc2.IsInvincible = true;
 			if (npc1.IsAlive && npc2.IsAlive)
 			{
 				npc1.Task.FightAgainst(npc2);
 				npc2.Task.FightAgainst(npc1);
 			}
-
-			
-
-
-			isLoaded = true;
-
+			if (npc1 != null && npc2 != null)
+			{
+				isLoaded = true;
+				curState = MissionState.RunToPed;
+			}
 		}
 
 		public override void destroy()
@@ -112,7 +112,85 @@ namespace GTA
 				GTA.UI.Notification.Show("Mission Paused");
 			}
 		}
+
 		private void OnTick(object sender, EventArgs e)
+		{
+			runTo(curState, npc1);
+			stopFight(curState, npc1, npc2);
+			checkResult(curState);
+		}
+
+		private void runTo(MissionState state, Entity target)
+		{
+
+			Ped player = Game.Player.Character;
+			if (state != MissionState.RunToPed)
+			{
+				return;
+			}
+			if (counter < pause)
+			{
+				counter++;
+				return;
+			}
+			if (!walkToState) walkToState = PlayerActions.runTo(target);
+
+			float distance = Vector3.Distance(player.Position, target.Position);
+			//Log.Message(Log.Level.Debug, "walkTo, ", " state: ", state.ToString(), " target: ", target.ToString()," distance: ", distance.ToString());
+			GTA.UI.Screen.ShowSubtitle($"state: {state.ToString()}, distance: {distance}");
+			if (distance < 3.0f)
+			{
+				if (state == MissionState.RunToPed)
+				{
+					curState = MissionState.StopFight;
+					GTA.UI.Notification.Show("Run to npc completed. Stop fight.");
+					walkToState = false;
+				}
+			}
+			counter = 0;
+		}
+
+		private void stopFight(MissionState state, Entity target1, Entity target2)
+		{
+			if (state != MissionState.StopFight)
+			{
+				return;
+			}
+			if (counter < pause)
+			{
+				counter++;
+				//return;
+			}
+			Ped ped1 = target1 as Ped;
+			Ped ped2 = target2 as Ped;
+			PlayerActions.stopFight(ped1, ped2);
+			if (!isFighting(ped1, ped2))
+			{
+				curState = MissionState.Completed;
+				GTA.UI.Notification.Show("Stop fight completed. Mission completed.");
+			}
+			counter = 0;
+		}
+
+		private void checkResult(MissionState state)
+		{
+			Ped player = Game.Player.Character;
+			if (state != MissionState.Completed)
+			{
+				return;
+			}
+			if (counter < pause)
+			{
+				counter++;
+				return;
+			}
+			if (npc1.IsAlive && npc2.IsAlive && !isFighting(npc1, npc2))
+			{
+				isMissionSucceed = true;
+			}
+			counter = 0;
+		}
+		private void OnTick_case(object sender, EventArgs e)
 		{
 			Ped player = Game.Player.Character;
 			if (isPaused)
@@ -133,14 +211,14 @@ namespace GTA
 						counter++;
 						return;
 					}
-					curState = MissionState.WalkToPed;
+					curState = MissionState.RunToPed;
 					GTA.UI.Notification.Show("Mission started. Walk to the ped.");
 					counter = 0;
 
 					break;
 
 
-				case MissionState.WalkToPed:
+				case MissionState.RunToPed:
 					if (counter < pause)
 					{
 						counter++;

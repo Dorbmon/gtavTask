@@ -28,6 +28,16 @@ namespace GTA
 
 
 		}
+
+		public static bool walkTo(Entity target)
+		{
+			if (target == null)
+			{
+				return false;
+			}
+			Game.Player.Character.Task.GoTo(target, new Vector3(1.0f, 1.0f, 1.0f));
+			return true;
+		}
 		public static void walkToModel(int model)
 		{
 			var entities = World.GetAllEntities();
@@ -49,21 +59,6 @@ namespace GTA
 				}
 			}
 		}
-
-		public static bool walkToEntity(Entity target)
-		{
-			if (target == null)
-			{
-				//Log.Message(Log.Level.Debug, "walkToEntity, target not found");
-				//Console.WriteLine("");
-				return false;
-			}
-			Game.Player.Character.Task.GoTo(target, new Vector3(1.0f, 1.0f, 1.0f));
-			//Log.Message(Log.Level.Debug, "walkToEntity, go to target");
-			return true;
-			//Console.WriteLine("walkToEntity, go to target");
-		}
-		
 		public void walkTo(int hash)
 		{
 			var entities = World.GetAllEntities();
@@ -85,14 +80,13 @@ namespace GTA
 				}
 			}
 		}
-
 		public static bool walkToPos(Vector3 pos)
 		{
 			Game.Player.Character.Task.GoTo(pos);
 			return true;
 		}
 
-		public bool didHurtAnyOne()
+		public static bool didHurtAnyOne()
 		{
 			// there is no method found to get hurt record on others, so get ped and then check them
 			var nearbyPeds = World.GetNearbyPeds(Game.Player.Character, 10);
@@ -112,17 +106,13 @@ namespace GTA
 		{
 			if (target == null)
 			{
-				//Log.Message(Log.Level.Debug, "walkToEntity, target not found");
-				//Console.WriteLine("");
 				return false;
 			}
 			Game.Player.Character.Task.RunTo(target.Position);
-			//Log.Message(Log.Level.Debug, "walkToEntity, go to target");
 			return true;
-			//Console.WriteLine("walkToEntity, go to target");
 		}
 		
-		// swim is not supported now
+		// swim to an object
 		public static bool swimTo(Entity target)
 		{
 			Ped player = Game.Player.Character;
@@ -130,25 +120,16 @@ namespace GTA
 			{
 				return false;
 			}
-		
-				player.Task.RunTo(target.Position);
-				return true;
-
+			player.Task.RunTo(target.Position);
+			return true;
 		}
 		
-
-		public void driveVehicleForward()
-		{
-			var vehicle = Game.Player.Character.CurrentVehicle;
-			if (vehicle != null)
-			{
-			}
-		}
+		/*
 		public void getOnNearByVehicle()
 		{
 			Game.Player.Character.Task.EnterAnyVehicle();
 		}
-
+		*/
 
 		public static bool getOnNearbyVehicle()
 		{
@@ -161,6 +142,19 @@ namespace GTA
 			return false;
 		}
 
+		public static bool getOnVehicle(Entity target)
+		{
+			if (target != null)
+			{
+				Vehicle car = target as Vehicle;
+				if (car != null && car.IsDriveable)
+				{
+					Game.Player.Character.Task.EnterVehicle(car, VehicleSeat.Driver);
+					return true;
+				}
+			}
+			return false;
+		}
 		//get off vehicle
 		public static void getOffVehicle()
 		{
@@ -183,14 +177,19 @@ namespace GTA
 			return true;
 		}
 
-		public static bool driveTo(Vehicle tool, Entity target)
+		public static bool driveTo(Entity tool, Entity target)
 		{
 			if (target == null)
 			{
 				return false;
 			}
-			Game.Player.Character.Task.DriveTo(tool, target.Position, 5.0f, 10.0f);
-			return true;
+			Vehicle vehicle = tool as Vehicle;
+			if (vehicle != null)
+			{
+				Game.Player.Character.Task.DriveTo(vehicle, target.Position, 5.0f, 10.0f);
+				return true;
+			}
+			return false;
 		}
 
 
@@ -379,12 +378,13 @@ namespace GTA
 			}
 		}
 
-		public static bool letOnCar(Ped target)
+		public static bool letOn(Entity tool, Entity target)
 		{
 
 			Ped player = Game.Player.Character;
-			Vehicle car = World.GetClosestVehicle(player.Position, 5.0f);
-			if (target.Exists() && player.Exists() && car.Exists())
+			Vehicle car = tool as Vehicle;
+			Ped ped = target as Ped;
+			if (ped.Exists() && player.Exists() && car.Exists())
 			{
 				Log.Message(Log.Level.Debug, "letDogOnCar.");
 				float distanceToCar = target.Position.DistanceTo(car.Position);
@@ -392,8 +392,8 @@ namespace GTA
 				if (distanceToCar <= 5.0f && isFrontRightDoorOpen)
 				{
 					GTA.UI.Notification.Show("RightFront door is open, letting chop into the car...");
-					target.Task.ClearAllImmediately();
-					target.Task.EnterVehicle(car, VehicleSeat.RightFront);
+					ped.Task.ClearAllImmediately();
+					ped.Task.EnterVehicle(car, VehicleSeat.RightFront);
 					return true;
 				}
 			}
