@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,9 @@ namespace GTA
 		enum MissionState
 		{
 			NotStarted,
-			Display,
-			ExitVehicle,
-			WalkToNpc,
-			CommandNpcToFollow,
-			WalkToShelter,
+			NpcChasePlayer,
+			ClimbLadder,
+			WalkToFlag, 
 			Completed
 		}
 
@@ -33,12 +32,13 @@ namespace GTA
 		private Vector3 npcPos = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
 		private Ped npc;
+		private Prop flag;
 		private int counter = 0;
 		private bool isLoaded = false;
-		private bool walkToNpcState = false;
-		private bool walkToShelterState = false;
-		private bool npcFollowState = false;
+		private bool walkToFlagState = false;
+		private bool npcChaseState = false;
 		private int pause = 150;
+		private int endPause = 2400;
 		private bool isPaused = false;
 
 
@@ -53,9 +53,9 @@ namespace GTA
 			GTA.UI.Notification.Show("load mission_npc_follow...");
 			Ped player = Game.Player.Character;
 
-			changePos(ref playerPos, 452, -944, 28);
-			changePos(ref shelterPos, 429, -975, 30);
-			changePos(ref npcPos, 449, -931, 29);
+			changePos(ref playerPos, 380, -897, 39);
+			changePos(ref shelterPos, 373, -894, 44);
+			changePos(ref npcPos, 381, -902, 29);
 			// 设置游戏时间为下午3点30分
 			World.CurrentTimeOfDay = new TimeSpan(15, 30, 0);
 			// 设置天气为晴朗
@@ -75,13 +75,14 @@ namespace GTA
 			}
 
 			npc = World.CreatePed(PedHash.Downtown01AFM, npcPos);
+			flag = World.CreateProp("ind_prop_dlc_flag_01", shelterPos, false, false);
 			npc.Heading = 180;
 			if (npc == null)
 			{
 				GTA.UI.Notification.Show("NPC CREATE FAILED !");
 			}
 
-			isLoaded = true;
+			isLoaded = false;
 		}
 
 		public override void destroy()
@@ -127,18 +128,18 @@ namespace GTA
 					{
 						return;
 					}
-					if (counter < 10)
+					if (counter < pause)
 					{
 						counter++;
 						return;
 					}
-					curState = MissionState.WalkToNpc;
+					curState = MissionState.NpcChasePlayer;
 					GTA.UI.Notification.Show("Mission started. Display.");
 					counter = 0;
 
 					break;
 
-				case MissionState.WalkToNpc:
+				case MissionState.NpcChasePlayer:
 					if (counter < pause)
 					{
 						counter++;
@@ -151,7 +152,8 @@ namespace GTA
 					//Console.WriteLine("");
 					if (npc != null)
 					{
-						if (!walkToNpcState) walkToNpcState = PlayerActions.walkToEntity(npc);
+						if (!npcChaseState) npcChaseState = PlayerActions.letChase(npc);
+						
 					}
 					else
 					{
@@ -188,7 +190,7 @@ namespace GTA
 						walk_to_vehicle_state = false;
 						dog_follow_state = false;
 					}
-					*/
+					
 					if (Vector3.Distance(npc.Position, shelterPos) < 5.0f)
 					{
 						PlayerActions.letStopFollow(npc);
@@ -220,9 +222,36 @@ namespace GTA
 			pos = new Vector3(x, y, z);
 		}
 
+		bool isDoor(Entity entity)
+		{
+			// 这里是一些已知的门的模型名称
+			List<string> doorModels = new List<string>
+	{
+		"prop_door_01", // 这是一个示例，你需要替换成真实的门的模型名称
+        // ... 其他的门模型名称
+    };
+
+			// 检查实体的模型名称是否在列表中
+			if (doorModels.Contains(entity.Model.ToString()))
+			{
+				return true;
+			}
+
+			// 你也可以检查散列值
+			int modelHash = entity.Model.Hash;
+			if (modelHash == Game.GenerateHash("prop_door_01")) // 用实际的模型散列值替换
+			{
+				return true;
+			}
+
+			// 如果都不匹配，那么这个实体不是门
+			return false;
+		}
 		private void playerAct()
 		{
 
 		}
 	}
 }
+
+*/
