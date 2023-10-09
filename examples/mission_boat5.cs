@@ -121,7 +121,10 @@ namespace GTA
 			DriveBackToShore,
 			Completed
 			*/
-			
+			if (isPaused)
+			{
+				return;
+			}
 			swimTo(curState, boat);
 			getOn(curState, boat);
 			driveTo(curState, boat, endtarget);

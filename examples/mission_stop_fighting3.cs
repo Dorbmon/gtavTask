@@ -121,6 +121,10 @@ namespace GTA
 
 		private void OnTick(object sender, EventArgs e)
 		{
+			if (isPaused)
+			{
+				return;
+			}
 			climb(curState);
 			runTo(curState, npc1);
 			stopFight(curState, npc1, npc2);

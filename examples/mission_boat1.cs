@@ -110,6 +110,10 @@ namespace GTA
 		private void OnTick(object sender, EventArgs e)
 		{
 			//GTA.UI.Screen.ShowSubtitle($"state: {curState}");
+			if (isPaused)
+			{
+				return;
+			}
 			swimTo(curState, boat);
 			getOn(curState, boat);
 			driveTo(curState, boat, endtarget);
@@ -123,7 +127,13 @@ namespace GTA
 			{
 				return;
 			}
-			
+			/*
+			if (counter < pause)
+			{
+				counter++;
+				return;
+			}
+			*/
 			Ped player = Game.Player.Character;
 			if (boat != null)
 			{
@@ -163,7 +173,13 @@ namespace GTA
 			{
 				return;
 			}
-			
+			/*
+			if (counter < pause)
+			{
+				counter++;
+				return;
+			}
+			*/
 			if (!playerInBoatState) playerInBoatState = PlayerActions.getOnVehicle(boat);
 
 			if (player.IsInVehicle())
@@ -181,7 +197,13 @@ namespace GTA
 			{
 				return;
 			}
-			
+			/*
+			if (counter < pause)
+			{
+				counter++;
+				return;
+			}
+			*/
 			if (!driveToShoreState) driveToShoreState = PlayerActions.driveTo(boat, endtarget);
 			float dist = Vector3.Distance(player.Position, shorePos);
 			GTA.UI.Screen.ShowSubtitle($"distance: {dist}");
@@ -200,11 +222,13 @@ namespace GTA
 			{
 				return;
 			}
+			/*
 			if (counter < pause)
 			{
 				counter++;
 				return;
 			}
+			*/
 			if (boat.Position.DistanceTo(shorePos) < 10.0f && player.CurrentVehicle == boat)
 			{
 				isMissionSucceed = true;

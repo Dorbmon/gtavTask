@@ -149,6 +149,10 @@ namespace GTA
 			WalkToShelter,
 			CommandNpcToStop,
 			 */
+			if (isPaused)
+			{
+				return;
+			}
 			walkTo(curState, spot);
 			walkTo(curState, npc);
 			letFollow(curState, npc);

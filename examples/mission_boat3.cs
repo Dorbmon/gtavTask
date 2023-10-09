@@ -106,6 +106,10 @@ namespace GTA
 		private void OnTick(object sender, EventArgs e)
 		{
 			//GTA.UI.Screen.ShowSubtitle($"state: {curState}");
+			if (isPaused)
+			{
+				return;
+			}
 			swimTo(curState, boat);
 			getOn(curState, boat);
 			driveTo(curState, boat, endtarget);
