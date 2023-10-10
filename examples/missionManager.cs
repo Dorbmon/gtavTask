@@ -88,21 +88,24 @@ namespace GTA
 		}
 		private void loadMissions()
 		{
-			
-
-			missions.Add(InstantiateScript<mission_dog_follow1>());
-			
-			
-			missions.Add(InstantiateScript<mission_dog_follow2>());
-			missions.Add(InstantiateScript<mission_dog_follow3>());
-			missions.Add(InstantiateScript<mission_dog_follow4>());
-			missions.Add(InstantiateScript<mission_dog_follow5>());
 
 			missions.Add(InstantiateScript<mission_stop_fighting1>());
 			missions.Add(InstantiateScript<mission_stop_fighting2>());
 			missions.Add(InstantiateScript<mission_stop_fighting3>());
 			missions.Add(InstantiateScript<mission_stop_fighting4>());
 			missions.Add(InstantiateScript<mission_stop_fighting5>());
+
+			missions.Add(InstantiateScript<mission_npc_follow1>());
+			missions.Add(InstantiateScript<mission_npc_follow2>());
+			missions.Add(InstantiateScript<mission_npc_follow3>());
+			missions.Add(InstantiateScript<mission_npc_follow4>());
+			missions.Add(InstantiateScript<mission_npc_follow5>());
+
+			missions.Add(InstantiateScript<mission_dog_follow1>());
+			missions.Add(InstantiateScript<mission_dog_follow2>());
+			missions.Add(InstantiateScript<mission_dog_follow3>());
+			missions.Add(InstantiateScript<mission_dog_follow4>());
+			missions.Add(InstantiateScript<mission_dog_follow5>());
 			
 			missions.Add(InstantiateScript<mission_boat1>());
 			missions.Add(InstantiateScript<mission_boat2>());
@@ -110,13 +113,9 @@ namespace GTA
 			missions.Add(InstantiateScript<mission_boat4>());
 			missions.Add(InstantiateScript<mission_boat5>());
 			
-			missions.Add(InstantiateScript<mission_npc_follow1>());
-			missions.Add(InstantiateScript<mission_npc_follow2>());
-			missions.Add(InstantiateScript<mission_npc_follow3>());
-			missions.Add(InstantiateScript<mission_npc_follow4>());
-			missions.Add(InstantiateScript<mission_npc_follow5>());
 			
-
+			
+			
 
 		}
 		private void clearMissions()
@@ -130,7 +129,7 @@ namespace GTA
 			}
 			missions.Clear();
 			Log.Message(Log.Level.Info, " clear missions done, mission_count= ", missions.Count.ToString(), ".");
-			GTA.UI.Screen.ShowSubtitle($"mission_count: {missions.Count}");
+			//GTA.UI.Screen.ShowSubtitle($"mission_count: {missions.Count}");
 		}
 	}
 }

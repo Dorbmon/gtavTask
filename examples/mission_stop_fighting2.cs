@@ -32,7 +32,7 @@ namespace GTA
 		private Vector3 spotPos = new Vector3(0, 0, 0);
 		private Ped npc1, npc2;
 		private Vehicle spot;
-		private int counter = 0;
+		private int counter = 0, walk_counter = 0;
 		private bool isLoaded = false;
 		private bool walkToState = false;
 		private bool walkToPedState = false;
@@ -76,17 +76,17 @@ namespace GTA
 			{
 				vehicle.Delete();
 			}
-			npc1 = World.CreatePed(PedHash.Beach01AMM, npc1Pos);
-			npc2 = World.CreatePed(PedHash.Genfat01AMM, npc2Pos);
-			npc1.IsInvincible = true;
-			npc2.IsInvincible = true;
+			npc1 = World.CreatePed(PedHash.ArmGoon01GMM, npc1Pos);
+			npc2 = World.CreatePed(PedHash.ArmBoss01GMM, npc2Pos);
+			
 			if (npc1.IsAlive && npc2.IsAlive)
 			{
 				npc1.Task.FightAgainst(npc2);
 				npc2.Task.FightAgainst(npc1);
 			}
 
-			
+			npc1.IsInvincible = true;
+			npc2.IsInvincible = true;
 			spot = World.CreateVehicle(VehicleHash.Emerus, spotPos);
 			if (npc1 != null && npc2 != null && spot != null)
 			{
@@ -160,7 +160,7 @@ namespace GTA
 			float distance = Vector3.Distance(player.Position, target.Position);
 			//Log.Message(Log.Level.Debug, "walkTo, ", " state: ", state.ToString(), " target: ", target.ToString()," distance: ", distance.ToString());
 			GTA.UI.Screen.ShowSubtitle($"state: {state.ToString()}, distance: {distance}");
-			if (distance < 3.0f)
+			if (distance < 5.0f)
 			{
 				if (state == MissionState.RunToPed)
 				{
@@ -177,6 +177,17 @@ namespace GTA
 					
 				}
 			}
+			if (distance > 5.0f)
+			{
+				if (walk_counter == 100)
+				{
+					walk_counter = 0;
+					walkToState = false;
+					GTA.UI.Notification.Show("run to npc again.");
+				}
+				walk_counter++;
+
+			}
 			counter = 0;
 		}
 
@@ -188,8 +199,8 @@ namespace GTA
 			}
 			if (counter < pause)
 			{
-				//counter++;
-				return;
+				counter++;
+				//return;
 			}
 			Ped ped1 = target1 as Ped;
 			Ped ped2 = target2 as Ped;

@@ -28,7 +28,7 @@ namespace GTA
 		private Vector3 npc2Pos = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
 		private Ped npc1, npc2;
-		private int counter = 0;
+		private int counter = 0, walk_counter = 0;
 		private bool isLoaded = false;
 		private bool walkToState = false;
 		private bool walkToPedState = false;
@@ -147,7 +147,7 @@ namespace GTA
 			float distance = Vector3.Distance(player.Position, target.Position);
 			//Log.Message(Log.Level.Debug, "walkTo, ", " state: ", state.ToString(), " target: ", target.ToString()," distance: ", distance.ToString());
 			GTA.UI.Screen.ShowSubtitle($"state: {state.ToString()}, distance: {distance}");
-			if (distance < 3.0f)
+			if (distance < 5.0f)
 			{
 				if (state == MissionState.RunToPed)
 				{
@@ -155,6 +155,17 @@ namespace GTA
 					GTA.UI.Notification.Show("Run to npc completed. Stop fight.");
 					walkToState = false;
 				}
+			}
+			if (distance > 5.0f)
+			{
+				if (walk_counter == 100)
+				{
+					walk_counter = 0;
+					walkToState = false;
+					GTA.UI.Notification.Show("run to npc again.");
+				}
+				walk_counter++;
+
 			}
 			counter = 0;
 		}

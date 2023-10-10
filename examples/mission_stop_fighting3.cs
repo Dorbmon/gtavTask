@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Security.Policy;
 //using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Windows.Forms;
 using GTA.Math;
 using GTA.Native;
 using SHVDN;
+using static System.Windows.Forms.AxHost;
 
 namespace GTA
 {
@@ -30,7 +32,7 @@ namespace GTA
 		private Vector3 npc2Pos = new Vector3(0, 0, 0);
 		private Vector3 playerPos = new Vector3(0, 0, 0);
 		private Ped npc1, npc2;
-		private int counter = 0;
+		private int counter = 0, walk_counter = 0;
 		private bool isLoaded = false;
 		private bool walkToState = false;
 		private bool walkToPedState = false;
@@ -52,7 +54,7 @@ namespace GTA
 		{
 			GTA.UI.Notification.Show("load mission_stop_fighting...");
 			Ped player = Game.Player.Character;
-			changePos(ref playerPos, -1447, -875, 10);
+			changePos(ref playerPos, -1447, -877, 10);
 			changePos(ref npc1Pos, -1460, -900, 11);
 			changePos(ref npc2Pos, -1466, -897, 10);
 
@@ -88,6 +90,7 @@ namespace GTA
 			{
 				isLoaded = true;
 				curState = MissionState.ClimbFence;
+				//curState = MissionState.NotStarted;
 			}
 
 		}
@@ -117,6 +120,10 @@ namespace GTA
 				isPaused = !isPaused;
 				GTA.UI.Notification.Show("Mission Paused");
 			}
+			if (e.KeyCode == Keys.F10)
+			{
+				IsFenceInFrontOfPlayer(5);
+			}
 		}
 
 		private void OnTick(object sender, EventArgs e)
@@ -134,15 +141,21 @@ namespace GTA
 		private void climb(MissionState state)
 		{
 			if (state != MissionState.ClimbFence) { return; }
-			if (counter < pause)
+			if (counter < 200)
 			{
 				counter++;
 				return;
 			}
 			Ped player = Game.Player.Character;
 			PlayerActions.climbUp();
-			curState = MissionState.RunToPed;
-			GTA.UI.Notification.Show("Climb fence completed. Walk to the ped.");
+			
+			PlayerActions.climbUp();
+			if (IsFenceInFrontOfPlayer(5))
+			{
+				curState = MissionState.RunToPed;
+				GTA.UI.Notification.Show("Climb fence completed. Walk to the ped.");
+			}
+			
 			counter = 0;
 		}
 		private void runTo(MissionState state, Entity target)
@@ -163,7 +176,7 @@ namespace GTA
 			float distance = Vector3.Distance(player.Position, target.Position);
 			//Log.Message(Log.Level.Debug, "walkTo, ", " state: ", state.ToString(), " target: ", target.ToString()," distance: ", distance.ToString());
 			GTA.UI.Screen.ShowSubtitle($"state: {state.ToString()}, distance: {distance}");
-			if (distance < 3.0f)
+			if (distance < 5.0f)
 			{
 				if (state == MissionState.RunToPed)
 				{
@@ -172,6 +185,17 @@ namespace GTA
 					walkToState = false;
 					
 				}
+			}
+			if (distance > 5.0f)
+			{
+				if (walk_counter == 100)
+				{
+					walk_counter = 0;
+					walkToState = false;
+					GTA.UI.Notification.Show("run to npc again.");
+				}
+				walk_counter++;
+
 			}
 			counter = 0;
 		}
@@ -216,6 +240,39 @@ namespace GTA
 			}
 			counter = 0;
 		}
+
+		public bool IsFenceInFrontOfPlayer(float distance)
+		{
+			Vector3 playerPos = Game.Player.Character.Position;
+			Vector3 forwardDirection = Game.Player.Character.ForwardVector;
+			Vector3 endPoint = playerPos + forwardDirection * distance;
+			GTA.UI.Screen.ShowSubtitle($"endpoint: {endPoint}");
+			RaycastResult ray = World.Raycast(playerPos, endPoint, IntersectFlags.Map, Game.Player.Character);
+			if (ray.DidHit)
+			{
+				GTA.UI.Screen.ShowSubtitle($"fence hit");
+				Entity entityHit = ray.HitEntity;
+				if (entityHit.Model.IsInCdImage)
+				{
+					int hash = entityHit.Model.Hash;
+					//GTA.UI.Notification.Show($"Model Hash: {hash}");
+					GTA.UI.Screen.ShowSubtitle($"Model Hash: {hash}");
+					string modelName = entityHit.Model.Hash.ToString();
+					// 这里，我们假设已知栅栏的模型名为"FENCE_MODEL_HASH"。
+					// 在实际情况中，你可能需要使用正确的哈希值或进行其他检查。
+					//if (modelName == "FENCE_MODEL_HASH")
+					//	return true;
+				}
+			}
+			else
+			{
+				GTA.UI.Screen.ShowSubtitle($"not hit");
+			}
+			
+			//return false;
+			return true;
+		}
+
 		private void OnTick_case(object sender, EventArgs e)
 		{
 			Ped player = Game.Player.Character;

@@ -108,7 +108,7 @@ namespace GTA
 			{
 				return false;
 			}
-			Game.Player.Character.Task.RunTo(target.Position);
+			Game.Player.Character.Task.RunTo(target.Position + new Vector3(-1.3f, -1.3f, 1.0f));
 			return true;
 		}
 		
@@ -386,12 +386,12 @@ namespace GTA
 			Ped ped = target as Ped;
 			if (ped.Exists() && player.Exists() && car.Exists())
 			{
-				Log.Message(Log.Level.Debug, "letDogOnCar.");
+				//Log.Message(Log.Level.Debug, "letDogOnCar.");
 				float distanceToCar = target.Position.DistanceTo(car.Position);
 				bool isFrontRightDoorOpen = car.Doors[VehicleDoorIndex.FrontRightDoor].IsOpen;
 				if (distanceToCar <= 5.0f && isFrontRightDoorOpen)
 				{
-					GTA.UI.Notification.Show("RightFront door is open, letting chop into the car...");
+					//GTA.UI.Notification.Show("RightFront door is open, letting chop into the car...");
 					ped.Task.ClearAllImmediately();
 					ped.Task.EnterVehicle(car, VehicleSeat.RightFront);
 					return true;
@@ -408,7 +408,7 @@ namespace GTA
 				float distance1 = target1.Position.DistanceTo(player.Position);
 				float distance2 = target2.Position.DistanceTo(player.Position);
 
-				if (distance1 <= 5.0f || distance2 <= 5.0f)
+				if (distance1 <= 8.0f || distance2 <= 8.0f)
 				{
 					player.Task.PlayAnimation("anim@heists@ornate_bank@chat_manager", "average_clothes");
 					target1.Task.ClearAllImmediately();
