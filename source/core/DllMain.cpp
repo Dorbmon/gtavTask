@@ -468,10 +468,10 @@ static void ScriptKeyboardMessage(DWORD key, WORD repeats, BYTE scanCode, BOOL i
 }
 
 LONG WINAPI MyUnhandledExceptionFilter(EXCEPTION_POINTERS* ExceptionInfo) {
-	// 定义Minidump文件的名称
+	
 	const WCHAR* dumpFileName = L"crashdump.dmp";
 
-	// 创建Minidump文件
+	
 	HANDLE hDumpFile = CreateFile(dumpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hDumpFile != INVALID_HANDLE_VALUE) {
@@ -480,14 +480,12 @@ LONG WINAPI MyUnhandledExceptionFilter(EXCEPTION_POINTERS* ExceptionInfo) {
 		dumpExceptionInfo.ExceptionPointers = ExceptionInfo;
 		dumpExceptionInfo.ClientPointers = TRUE;
 
-		// 写入Minidump
 		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &dumpExceptionInfo, NULL, NULL);
 
 		CloseHandle(hDumpFile);
 	}
 
-	// 如果需要的话，这里可以返回EXCEPTION_CONTINUE_SEARCH让其他异常处理器处理异常
-	// 这通常用于在调试时不干扰调试器
+	
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
@@ -498,7 +496,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
 	case DLL_PROCESS_ATTACH:
 		// Avoid unnecessary DLL_THREAD_ATTACH and DLL_THREAD_DETACH notifications
 		DisableThreadLibraryCalls(hModule);
-		// 设置未处理异常的过滤器
+		
 		SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);
 		// Register ScriptHookVDotNet native script
 		scriptRegister(hModule, ScriptMain);
