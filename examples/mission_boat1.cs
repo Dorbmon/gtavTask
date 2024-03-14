@@ -13,6 +13,7 @@ using static System.Windows.Forms.AxHost;
 
 namespace GTA
 {
+	[ScriptAttributes(NoDefaultInstance = true)]
 	internal class mission_boat1 : mission
 	{
 		enum MissionState
@@ -135,6 +136,7 @@ namespace GTA
 			}
 			*/
 			Ped player = Game.Player.Character;
+			if (!player.Exists()) return;
 			if (boat != null)
 			{
 				if (!swimToBoatState) swimToBoatState = PlayerActions.swimTo(boat);
@@ -169,6 +171,7 @@ namespace GTA
 		private void getOn(MissionState state, Entity boat)
 		{
 			Ped player = Game.Player.Character;
+			if (!boat.Exists() || !player.Exists()) return;
 			if (state != MissionState.EnterBoat)
 			{
 				return;
@@ -193,6 +196,7 @@ namespace GTA
 		private void driveTo(MissionState state, Entity boat, Entity endtarget)
 		{
 			Ped player = Game.Player.Character;
+			if(!player.Exists() || !boat.Exists() || !endtarget.Exists()) return;
 			if (state != MissionState.DriveBackToShore)
 			{
 				return;
@@ -218,6 +222,7 @@ namespace GTA
 		private void checkResult(MissionState state)
 		{
 			Ped player = Game.Player.Character;
+			if (!player.Exists()) return;
 			if (state != MissionState.Completed)
 			{
 				return;

@@ -1,3 +1,5 @@
+
+/*
 using System;
 using System.Windows.Forms;
 using GTA;
@@ -417,3 +419,4 @@ namespace ScriptInstance
 	}
 	
 }
+*/

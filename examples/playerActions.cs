@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 //using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GTA.Math;
+using GTA.Native;
 using SHVDN;
 using static SHVDN.NativeMemory;
 
 namespace GTA
 {
-	internal class PlayerActions: Script
+	public class PlayerActions: Script
 	{
 		public PlayerActions()
 		{
@@ -20,13 +24,93 @@ namespace GTA
 
 		public void PlayerActions_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
-
+			/*
 			if (e.KeyCode == Keys.F9)
 			{
-				showPlayerPos();
+				aimAtByVector(new Vector3(0, 0, 0));
 			}
+			//if (e.KeyCode == Keys.F10)
+			{
+				//changeToFirstPersonView();
+			}
+			if (e.KeyCode == Keys.F11)
+			{
+				changeToThirdPersonView();
+			}
+			*/
+		}
 
+		public void PlayerAction_OnTick(object sender, EventArgs e)
+		{
+			if (Game.Player.IsAiming)
+			{
+				UI.Screen.ShowSubtitle("player is aiming");
+			}
+		}
+		public static bool changePlayerDirection(float angle) //range from 0-360
+		{
+			Ped player = Game.Player.Character;
+			player.Heading = angle;
+			return true;
+		}
 
+		/*
+		public static bool turnPlayer(float degree) // turn left: postive degree , turn right: negative degree
+		{
+			Ped player = Game.Player.Character;
+			float newHeading = player.Heading + degree;
+			string msg = $"before heading:{player.Heading}, after heading:{newHeading}";
+			UI.Screen.ShowSubtitle(msg);
+			if (newHeading < 0) newHeading += 360;
+			if (newHeading > 360) newHeading -= 360;
+
+			player.Heading = newHeading;
+
+			return true;
+		}
+		*/
+
+		public static async Task turnPlayer(float degree) //positive: turn left, negative: turn right
+		{
+			
+			Ped player = Game.Player.Character;
+			changeToFirstPersonView();
+			float step = degree > 0f ? 90f : -90f; 
+			float counter = degree > 0f ? 5f : -5f;
+			float rotated = 0; // 已旋转角度
+
+			while (System.Math.Abs(rotated) < System.Math.Abs(degree))
+			{
+				float newHeading = player.Heading + step;
+				if (newHeading >= 360f)
+				{
+					newHeading -= 360f;
+				}
+				else if (newHeading < 0)
+				{
+					newHeading += 360f;
+				}
+
+				player.Heading = newHeading;
+
+				rotated += counter;
+				Log.Message(Log.Level.Info, "PlayerActions::turnPlayer, player_heading=", player.Heading.ToString());
+
+				await Task.Delay(1000);
+			}
+		}
+
+		public static bool goForward(float distance=5)
+		{
+			Ped player = Game.Player.Character;
+			changeToFirstPersonView();
+
+			float heading = player.Heading;
+			Vector3 forward = player.ForwardVector;
+			Vector3 newPos = player.Position + forward * distance;
+			walkToPos(newPos);
+			player.Heading = heading;
+			return true;
 		}
 
 		public static bool walkTo(Entity target)
@@ -303,7 +387,93 @@ namespace GTA
 				}
 			}
 		}
+		public static bool aimAtByVector(Vector3 vec, int duration = 5000)
+		{
+			Ped player = Game.Player.Character;
+			Vector3 forwardVec = player.ForwardVector;
+			if (vec == null)
+			{
+				vec = forwardVec;
+			}
 
+			bool hasWeapon = player.Weapons.Current.Hash != WeaponHash.Unarmed;
+			if (!hasWeapon)
+			{
+				player.Weapons.Give(WeaponHash.Pistol, 100, true, true);
+			}
+
+			player.Task.AimAt(vec, duration);
+			return true;
+		}
+		
+		public static bool aimAtTarget(Entity target, int duration = 10000)
+		{
+			Ped player = Game.Player.Character;
+			if (target == null)
+			{
+				return false;
+			}
+				
+			bool hasWeapon = player.Weapons.Current.Hash != WeaponHash.Unarmed;
+			if (!hasWeapon)
+			{
+				player.Weapons.Give(WeaponHash.Pistol, 100, true, true);
+			}
+			//player.Task.AimAt(target, duration);
+			Function.Call(Hash.TASK_AIM_GUN_AT_ENTITY, player, target, duration, false);
+			//Wait(1000);
+
+			if (checkAimTarget(target))
+			{
+				Log.Message(Log.Level.Info, "aimAtTarget: Aim success!");
+				return true;
+			}
+			Log.Message(Log.Level.Info, "aimAtTarget: Aim failed!");
+			
+			return true;
+		}
+
+		public static bool checkAimTarget(Entity target)
+		{
+			if (Game.Player.IsAiming)
+			{
+				Entity targetedEntity = Game.Player.TargetedEntity;
+
+				if (targetedEntity != null)
+				{
+					if (targetedEntity == target)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		public static bool hitTarget(Entity target)
+		{
+			if (target == null || !target.Exists())
+			{
+				Log.Message(Log.Level.Info, "hitTarget: target does not exist ! Failed!");
+				return false;
+			}
+			
+			if (!checkAimTarget(target))
+			{
+				Log.Message(Log.Level.Info, "hitTarget: target is not aimed! ");
+				//return false;
+			}
+			
+			// 获取目标的位置
+			Vector3 targetPosition = target.Position;
+
+			// 使用原生函数使玩家瞄准目标位置
+			Function.Call(Hash.TASK_SHOOT_AT_COORD, Game.Player.Character, targetPosition.X, targetPosition.Y, targetPosition.Z, 5000, FiringPattern.FullAuto);
+			//Wait(500);
+			Log.Message(Log.Level.Info, "hitTarget: hit is done! ");
+			return true;
+		}
+	
 		public static void openVehicleFrontRightDoor()
 		{
 			Ped player = Game.Player.Character;
@@ -418,6 +588,127 @@ namespace GTA
 			}
 			return false;
 		}
+
+		[DllImport("user32.dll")]
+		public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+		[DllImport("user32.dll", EntryPoint = "keybd_event", SetLastError = true)]
+		public static extern void keybd_event(Keys bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+
+		const uint VK_V = 0x56;
+		//scan code for virtual keypress
+		static byte GetScanCode(uint pKey)
+		{
+			uint result = MapVirtualKey(pKey, 0);
+			return (byte)(result & 0xFF);
+		}
+
+		private static async Task changePerspective(int times)
+		{
+			for (int i = 0; i < times; i++)
+			{
+				await Task.Delay(500);
+				keybd_event(Keys.V, GetScanCode(VK_V), 2, 0);
+				await Task.Delay(500);
+				keybd_event(Keys.V, GetScanCode(VK_V), 0, 0);
+				GTA.UI.Notification.Show("'V' pressed.");
+				await Task.Delay(200);
+				keybd_event(Keys.V, GetScanCode(VK_V), 2, 0);
+				await Task.Delay(500);
+			}
+		}
+
+		public static bool changeToFirstPersonView()
+		{
+			if (Game.Player.Character.IsInVehicle())
+			{
+				// if player in car, use SET_FOLLOW_VEHICLE_CAM_VIEW_MODE
+				Function.Call(Hash.SET_FOLLOW_VEHICLE_CAM_VIEW_MODE, 4);
+			}
+			else
+			{
+				// else use SET_FOLLOW_PED_CAM_VIEW_MODE
+				Function.Call(Hash.SET_FOLLOW_PED_CAM_VIEW_MODE, 4);
+			}
+			return true;
+		}
+
+		public static bool changeToThirdPersonView()
+		{
+			if (Game.Player.Character.IsInVehicle())
+			{
+				Function.Call(Hash.SET_FOLLOW_VEHICLE_CAM_VIEW_MODE, 2); 
+			}
+			else
+			{
+				Function.Call(Hash.SET_FOLLOW_PED_CAM_VIEW_MODE, 2); 
+			}
+			return true;
+		}
+		
+		public static async Task getImageAsync()
+		{
+			Ped player = Game.Player.Character;
+
+			int numPictureFOV = 8;
+			float angle = 45f;
+
+			changeToFirstPersonView();
+			await Task.Delay(500);
+
+			//float angle = 360f / numPictureFOV;
+			for (int i = 1; i <= numPictureFOV; i++)
+			{
+				//change camera rotation
+				
+				for (int _ = 0; _ < angle; _ += 5)
+				{
+					if (player.Heading + 90f <= 360f)
+						player.Heading += 90f;
+					else player.Heading -= 270f;
+					//GTA.UI.Notification.Show("Turn 5 degree. Heading = " + player.Heading.ToString());
+					await Task.Delay(500);
+				}
+
+				keybd_event(Keys.L, 0, 0, 0);
+				//GTA.UI.Notification.Show("RGBD image acquired.");
+				Log.Message(Log.Level.Info, "PlayerActions::getImageAsync, image taken(first perspective)");
+				await Task.Delay(1100);
+				keybd_event(Keys.L, 0, 2, 0);
+
+
+				
+				if (i == numPictureFOV || i == numPictureFOV / 2)
+				{
+					changeToThirdPersonView();
+					await Task.Delay(500);
+
+					keybd_event(Keys.L, 0, 0, 0);
+					//GTA.UI.Notification.Show("RGBD image acquired.(Third-person perspective)");
+					Log.Message(Log.Level.Info, "PlayerActions::getImageAsync, image taken(third perspective)");
+					await Task.Delay(1100);
+					keybd_event(Keys.L, 0, 2, 0);
+
+					changeToFirstPersonView();
+					await Task.Delay(500);
+				}
+				/*
+				changeToThirdPersonView();
+				await Task.Delay(500);
+
+				keybd_event(Keys.L, 0, 0, 0);
+				//GTA.UI.Notification.Show("RGBD image acquired.(Third-person perspective)");
+				Log.Message(Log.Level.Info, "PlayerActions::getImageAsync, image taken(third perspective)");
+				await Task.Delay(1100);
+				keybd_event(Keys.L, 0, 2, 0);
+				*/
+			}
+			changeToFirstPersonView();
+			await Task.Delay(500);
+		}
+
+		
+		
 		/*
 		public static bool getInNearbyDoor(Entity door)
 		{

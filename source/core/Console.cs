@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace SHVDN
 {
@@ -37,6 +38,7 @@ namespace SHVDN
 		private const int ConsoleHeight = BaseHeight / 3;
 		private const int InputHeight = 20;
 		private const int LinesPerPage = 16;
+		//private static FileSystemWatcher^ fileWatcher = gcnew FileSystemWatcher();
 
 		private static readonly Color s_inputColor = Color.White;
 		private static readonly Color s_inputColorBusy = Color.DarkGray;
@@ -1087,6 +1089,88 @@ namespace SHVDN
 				return null;
 			});
 		}
+
+		public void ExecuteCommandString(string command)
+		{
+			if (string.IsNullOrEmpty(command))
+			{
+				PrintError("Command is empty.");
+				Log.Message(Log.Level.Error, "ExecuteCommandString: command is empty!");
+				return;
+			}
+			if (_compilerTask != null)
+			{
+				PrintError("Previous compile task exist! Cannot compile new command.");
+				Log.Message(Log.Level.Error, "ExecuteCommandString: Previous compile task exist! Cannot compile new command.");
+			}
+
+			_commandPos = -1;
+			if (_commandHistory.LastOrDefault() != command)
+			{
+				_commandHistory.Add(command);
+			}
+
+			_compilerTask = Task.Factory.StartNew(() =>
+			{
+				var compiler = new Microsoft.CSharp.CSharpCodeProvider();
+				var compilerOptions = new System.CodeDom.Compiler.CompilerParameters();
+				compilerOptions.GenerateInMemory = true;
+				compilerOptions.IncludeDebugInformation = true;
+				compilerOptions.ReferencedAssemblies.Add("System.dll");
+				compilerOptions.ReferencedAssemblies.Add("System.Core.dll");
+				compilerOptions.ReferencedAssemblies.Add("System.Drawing.dll");
+				compilerOptions.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+				// Reference the newest scripting API
+				compilerOptions.ReferencedAssemblies.Add("ScriptHookVDotNet3.dll");
+				compilerOptions.ReferencedAssemblies.Add(typeof(ScriptDomain).Assembly.Location);
+
+				// With this parameter, you can use natives that require accessible addresses without having to use
+				// members of the Marshall class (e.g. SET_SCALEFORM_MOVIE_AS_NO_LONGER_NEEDED)
+				compilerOptions.CompilerOptions += " /unsafe";
+
+				foreach (Script script in ScriptDomain.CurrentDomain.RunningScripts.Where(x => x.IsRunning))
+				{
+					if (System.IO.File.Exists(script.Filename) && System.IO.Path.GetExtension(script.Filename) == ".dll")
+					{
+						compilerOptions.ReferencedAssemblies.Add(script.Filename);
+					}
+				}
+
+				const string template =
+					"using System; using System.Linq; using System.Drawing; using System.Windows.Forms; using GTA; using GTA.Math; using GTA.Native; " +
+					// Define some shortcut variables to simplify commands
+					"public sealed class ConsoleInput : ScriptHookVDotNet {{ public static object Execute() {{ var P = Game.LocalPlayerPed; var V = P.CurrentVehicle; {0}; return null; }} }}";
+
+				CompilerResults compilerResult = compiler.CompileAssemblyFromSource(compilerOptions, string.Format(template, command));
+
+				if (!compilerResult.Errors.HasErrors)
+				{
+					return compilerResult.CompiledAssembly.GetType("ConsoleInput").GetMethod("Execute");
+				}
+
+				PrintError($"Couldn't compile input expression: {command}");
+				Log.Message(Log.Level.Error, "ExecuteCommandString: Couldn't compile input expression: ", command);
+
+				var errors = new StringBuilder();
+
+				for (int i = 0; i < compilerResult.Errors.Count; ++i)
+				{
+					errors.Append("   at line ");
+					errors.Append(compilerResult.Errors[i].Line);
+					errors.Append(": ");
+					errors.Append(compilerResult.Errors[i].ErrorText);
+
+					if (i < compilerResult.Errors.Count - 1)
+					{
+						errors.AppendLine();
+					}
+				}
+
+				PrintError(errors.ToString());
+				return null;
+			});
+		}
+
 
 		public override object InitializeLifetimeService()
 		{

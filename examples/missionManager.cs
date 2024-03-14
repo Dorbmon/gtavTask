@@ -88,8 +88,10 @@ namespace GTA
 		}
 		private void loadMissions()
 		{
-
+			//missions.Add(InstantiateScript<mission_hit1>());
+			
 			missions.Add(InstantiateScript<mission_stop_fighting1>());
+			/*
 			missions.Add(InstantiateScript<mission_stop_fighting2>());
 			missions.Add(InstantiateScript<mission_stop_fighting3>());
 			missions.Add(InstantiateScript<mission_stop_fighting4>());
@@ -112,10 +114,10 @@ namespace GTA
 			missions.Add(InstantiateScript<mission_boat3>());
 			missions.Add(InstantiateScript<mission_boat4>());
 			missions.Add(InstantiateScript<mission_boat5>());
-			
-			
-			
-			
+			*/
+
+
+
 
 		}
 		private void clearMissions()

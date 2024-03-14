@@ -14,6 +14,7 @@ using static System.Windows.Forms.AxHost;
 
 namespace GTA
 {
+	[ScriptAttributes(NoDefaultInstance = true)]
 	internal class mission_stop_fighting3 : mission
 	{
 		enum MissionState
@@ -120,9 +121,9 @@ namespace GTA
 				isPaused = !isPaused;
 				GTA.UI.Notification.Show("Mission Paused");
 			}
-			if (e.KeyCode == Keys.F10)
+			//if (e.KeyCode == Keys.F10)
 			{
-				IsFenceInFrontOfPlayer(5);
+				//IsFenceInFrontOfPlayer(5);
 			}
 		}
 

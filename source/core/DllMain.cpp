@@ -6,7 +6,10 @@
 #pragma managed(push, off)
 
 #include <Windows.h>
+
 #include <atomic>
+
+
 
 std::atomic<LPVOID> sTlsContextAddrOfGameMainThread(nullptr);
 std::atomic<DWORD> sGameMainThreadId(0);
@@ -48,6 +51,7 @@ static void RequestScriptDomainToReload()
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Reflection;
+//using namespace System::IO;
 namespace WinForms = System::Windows::Forms;
 
 public ref class ScriptHookVDotNet // This is not a static class, so that console scripts can inherit from it for ConsoleInput class
@@ -131,27 +135,37 @@ public:
 		for each (auto script in domain->RunningScripts)
 			console->PrintInfo(IO::Path::GetFileName(script->Filename) + " ~h~" + script->Name + (script->IsRunning ? (script->IsPaused ? " ~o~[paused]" : " ~g~[running]") : " ~r~[aborted]"));
 	}
-
+	
 internal:
 	static SHVDN::Console ^console = nullptr;
+	static SHVDN::FileWatcher^ watcher = nullptr;
 	static SHVDN::ScriptDomain ^domain = SHVDN::ScriptDomain::CurrentDomain;
+	
 	static WinForms::Keys reloadKey = WinForms::Keys::None;
 	static WinForms::Keys consoleKey = WinForms::Keys::F4;
-	static unsigned int scriptTimeoutThreshold = 5000;
+	static WinForms::Keys watcherKey = WinForms::Keys::F5;
+
+	static unsigned int scriptTimeoutThreshold = 50000;
 	static bool shouldWarnOfScriptsBuiltAgainstDeprecatedApiWithTicker = true;
 	static Object^ unloadLock = gcnew Object();
 	static void SetConsole()
 	{
 		console = (SHVDN::Console ^)AppDomain::CurrentDomain->GetData("Console");
 	}
+	static void SetFileWatcher()
+	{
+		watcher = (SHVDN::FileWatcher^)AppDomain::CurrentDomain->GetData("FileWatcher");
+	}
+	
 };
 
 static void ScriptHookVDotNet_ManagedInit()
 {
 	SHVDN::Console^% console = ScriptHookVDotNet::console;
 	SHVDN::ScriptDomain^% domain = ScriptHookVDotNet::domain;
+	SHVDN::FileWatcher^% watcher = ScriptHookVDotNet::watcher;
 	List<String^>^ stashedConsoleCommandHistory = gcnew List<String^>();
-
+	
 	// Unload previous domain (this unloads all script assemblies too)
 	{
 		msclr::lock l(ScriptHookVDotNet::unloadLock);
@@ -164,7 +178,11 @@ static void ScriptHookVDotNet_ManagedInit()
 				stashedConsoleCommandHistory = console->CommandHistory;
 				console = nullptr;
 			}
-
+			if (watcher != nullptr)
+			{
+				//save previous watcher history?
+				watcher = nullptr;
+			}
 			SHVDN::ScriptDomain::Unload(domain);
 			domain = nullptr;
 		}
@@ -199,6 +217,8 @@ static void ScriptHookVDotNet_ManagedInit()
 				Enum::TryParse(valueStr, true, ScriptHookVDotNet::reloadKey);
 			else if (String::Equals(keyStr, "ConsoleKey", StringComparison::OrdinalIgnoreCase))
 				Enum::TryParse(valueStr, true, ScriptHookVDotNet::consoleKey);
+			else if (String::Equals(keyStr, "WatcherKey", StringComparison::OrdinalIgnoreCase))
+				Enum::TryParse(valueStr, true, ScriptHookVDotNet::watcherKey);
 			else if (String::Equals(keyStr, "ScriptTimeoutThreshold", StringComparison::OrdinalIgnoreCase))
 			{
 				unsigned int outVal;
@@ -226,6 +246,7 @@ static void ScriptHookVDotNet_ManagedInit()
 
 	// Create a separate script domain
 	domain = SHVDN::ScriptDomain::Load(".", scriptPath);
+
 	if (domain == nullptr)
 		return;
 
@@ -272,6 +293,25 @@ static void ScriptHookVDotNet_ManagedInit()
 		SHVDN::Log::Message(SHVDN::Log::Level::Error, "Failed to create console: ", ex->ToString());
 	}
 
+	try
+	{
+		//Instantiate filewatcher inside script domain
+		watcher = (SHVDN::FileWatcher^)domain->AppDomain->CreateInstanceFromAndUnwrap(
+			SHVDN::FileWatcher::typeid->Assembly->Location, SHVDN::FileWatcher::typeid->FullName);
+
+		//Restore watcher command history TODO
+		//Print welcome message
+		console->PrintInfo("~c~--- FileWatcher created ---");
+
+		domain->AppDomain->SetData("FileWatcher", watcher);
+		domain->AppDomain->DoCallBack(gcnew CrossAppDomainDelegate(&ScriptHookVDotNet::SetFileWatcher));
+
+		watcher->SetConsole(console);
+	}
+	catch (Exception^ ex)
+	{
+		SHVDN::Log::Message(SHVDN::Log::Level::Error, "Failed to create filewatcher: ", ex->ToString());
+	}
 	// Start scripts in the newly created domain
 	domain->Start();
 }
@@ -325,6 +365,12 @@ static void ScriptHookVDotNet_ManagedKeyboardMessage(unsigned long keycode, bool
 			return;
 	}
 
+	SHVDN::FileWatcher^ watcher = ScriptHookVDotNet::watcher;
+	if (watcher != nullptr)
+	{
+		watcher->DoKeyEvent(keys, keydown);
+	}
+
 	SHVDN::ScriptDomain ^scriptDomain = ScriptHookVDotNet::domain;
 	if (scriptDomain != nullptr)
 	{
@@ -336,7 +382,8 @@ static void ScriptHookVDotNet_ManagedKeyboardMessage(unsigned long keycode, bool
 #pragma unmanaged
 
 #include <Main.h>
-
+#include <DbgHelp.h>
+#pragma comment(lib, "dbghelp.lib")
 // solely for detection for recreation of the game session
 PVOID sOldGameFiber = nullptr;
 
@@ -420,6 +467,30 @@ static void ScriptKeyboardMessage(DWORD key, WORD repeats, BYTE scanCode, BOOL i
 		isWithAlt != FALSE);
 }
 
+LONG WINAPI MyUnhandledExceptionFilter(EXCEPTION_POINTERS* ExceptionInfo) {
+	// 定义Minidump文件的名称
+	const WCHAR* dumpFileName = L"crashdump.dmp";
+
+	// 创建Minidump文件
+	HANDLE hDumpFile = CreateFile(dumpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (hDumpFile != INVALID_HANDLE_VALUE) {
+		MINIDUMP_EXCEPTION_INFORMATION dumpExceptionInfo;
+		dumpExceptionInfo.ThreadId = GetCurrentThreadId();
+		dumpExceptionInfo.ExceptionPointers = ExceptionInfo;
+		dumpExceptionInfo.ClientPointers = TRUE;
+
+		// 写入Minidump
+		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &dumpExceptionInfo, NULL, NULL);
+
+		CloseHandle(hDumpFile);
+	}
+
+	// 如果需要的话，这里可以返回EXCEPTION_CONTINUE_SEARCH让其他异常处理器处理异常
+	// 这通常用于在调试时不干扰调试器
+	return EXCEPTION_EXECUTE_HANDLER;
+}
+
 BOOL WINAPI DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
 {
 	switch (fdwReason)
@@ -427,6 +498,8 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
 	case DLL_PROCESS_ATTACH:
 		// Avoid unnecessary DLL_THREAD_ATTACH and DLL_THREAD_DETACH notifications
 		DisableThreadLibraryCalls(hModule);
+		// 设置未处理异常的过滤器
+		SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);
 		// Register ScriptHookVDotNet native script
 		scriptRegister(hModule, ScriptMain);
 		// Register handler for keyboard messages
@@ -466,3 +539,6 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
 
 	return TRUE;
 }
+
+
+

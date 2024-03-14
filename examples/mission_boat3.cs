@@ -12,6 +12,7 @@ using SHVDN;
 
 namespace GTA
 {
+	[ScriptAttributes(NoDefaultInstance = true)]
 	internal class mission_boat3 : mission
 	{
 		enum MissionState

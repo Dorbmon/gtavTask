@@ -13,6 +13,7 @@ using static SHVDN.NativeMemory;
 
 namespace GTA
 {
+	[ScriptAttributes(NoDefaultInstance = true)]
 	internal class mission_stop_fighting2 : mission
 	{
 		enum MissionState

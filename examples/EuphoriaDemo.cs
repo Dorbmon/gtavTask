@@ -1,5 +1,5 @@
 using GTA;
-
+[ScriptAttributes(NoDefaultInstance = true)]
 public class EuphoriaDemo : Script
 {
 	public EuphoriaDemo()

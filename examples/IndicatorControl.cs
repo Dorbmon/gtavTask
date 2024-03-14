@@ -1,6 +1,7 @@
 using System;
 using GTA;
 
+[ScriptAttributes(NoDefaultInstance = true)]
 public class IndicatorControl : Script
 {
 	public IndicatorControl()

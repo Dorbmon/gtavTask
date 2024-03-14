@@ -9,6 +9,7 @@ using GTA.Native;
 
 namespace GTA
 {
+	[ScriptAttributes(NoDefaultInstance = true)]
 	internal class mission_cross_intersection : mission
 	{
 		private bool isMissionSucceed = false;
