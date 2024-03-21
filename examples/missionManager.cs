@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,10 +15,23 @@ namespace GTA
 		List<mission> missions = new List<mission>();
 		Random rand = new Random();
 		private bool isClearPressed = false;
+
+		private string missionInfoFolderPath = @"D:\GTA\Missions\"; 
+		private string missionInfoFileName = "CurrentMissionInfo.txt";
+		private string missionInfoFilePath;
+
 		public missionManager()
 		{
 			Tick += OnTick;
 			KeyDown += OnKeyDown;
+
+			if (!Directory.Exists(missionInfoFolderPath))
+			{
+				Directory.CreateDirectory(missionInfoFolderPath);
+			}
+
+			missionInfoFilePath = Path.Combine(missionInfoFolderPath, missionInfoFileName);
+			File.WriteAllText(missionInfoFilePath, "");
 		}
 		private void OnTick(object sender, EventArgs e)
 		{
@@ -33,7 +47,7 @@ namespace GTA
 			}
 			if (e.KeyCode == Keys.F8)
 			{
-				Log.Message(Log.Level.Info, "F11 is pressed ", ".");
+				Log.Message(Log.Level.Info, "F8 is pressed ", ".");
 				isClearPressed = true;
 			}
 		}
@@ -47,6 +61,8 @@ namespace GTA
 			{
 				int mission_id = rand.Next() % missions.Count;
 				var mission = missions[i];
+				UpdateCurrentMissionInfo(mission.GetType().Name, i);
+
 				mission.load();
 				reset_lm();
 				var begin = DateTime.Now;
@@ -90,7 +106,8 @@ namespace GTA
 		{
 			//missions.Add(InstantiateScript<mission_hit1>());
 			
-			missions.Add(InstantiateScript<mission_stop_fighting1>());
+			missions.Add(InstantiateScript<mission_dog_follow1>());
+			missions.Add(InstantiateScript<mission_dog_follow2>());
 			/*
 			missions.Add(InstantiateScript<mission_stop_fighting2>());
 			missions.Add(InstantiateScript<mission_stop_fighting3>());
@@ -98,7 +115,7 @@ namespace GTA
 			missions.Add(InstantiateScript<mission_stop_fighting5>());
 
 			missions.Add(InstantiateScript<mission_npc_follow1>());
-			missions.Add(InstantiateScript<mission_npc_follow2>());
+			
 			missions.Add(InstantiateScript<mission_npc_follow3>());
 			missions.Add(InstantiateScript<mission_npc_follow4>());
 			missions.Add(InstantiateScript<mission_npc_follow5>());
@@ -132,6 +149,12 @@ namespace GTA
 			missions.Clear();
 			Log.Message(Log.Level.Info, " clear missions done, mission_count= ", missions.Count.ToString(), ".");
 			//GTA.UI.Screen.ShowSubtitle($"mission_count: {missions.Count}");
+		}
+
+		private void UpdateCurrentMissionInfo(string missionClassName, int missionId)
+		{
+			string content = $"Current Mission: {missionClassName}\nMission ID: {missionId}";
+			File.WriteAllText(missionInfoFilePath, content);
 		}
 	}
 }

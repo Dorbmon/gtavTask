@@ -137,9 +137,9 @@ namespace GTA
 				return;
 			}
 			if (obj == null) { return; }
-			if (!aimAtTargetState) aimAtTargetState = PlayerActions.aimAtTarget(obj, 10000);
+			if (!aimAtTargetState) aimAtTargetState = PlayerActions.aimAtTarget(obj.Handle, 10000);
 			//Wait(500);
-			if (PlayerActions.checkAimTarget(obj))
+			if (PlayerActions.checkAimTarget(obj.Handle))
 			{
 				curState = MissionState.HitTarget;
 				GTA.UI.Notification.Show("Aim at target completed. Next step hit target.");
@@ -154,7 +154,7 @@ namespace GTA
 			if (state != MissionState.HitTarget) { return; }
 			if (counter < pause) { counter++; return; }
 			if (obj == null) { return; }
-			if (!hitTargetState) hitTargetState = PlayerActions.hitTarget(obj);
+			if (!hitTargetState) hitTargetState = PlayerActions.hitTarget(obj.Handle);
 			if (checkObjDamaged(obj))
 			{
 				curState = MissionState.Completed;

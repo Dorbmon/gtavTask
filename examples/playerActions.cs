@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using GTA.Math;
 using GTA.Native;
 using SHVDN;
+using System.IO;
 using static SHVDN.NativeMemory;
 
 namespace GTA
@@ -96,7 +97,7 @@ namespace GTA
 				rotated += counter;
 				Log.Message(Log.Level.Info, "PlayerActions::turnPlayer, player_heading=", player.Heading.ToString());
 
-				await Task.Delay(1000);
+				await Task.Delay(500);
 			}
 		}
 
@@ -113,6 +114,17 @@ namespace GTA
 			return true;
 		}
 
+		public static bool walkTo(int handle)
+		{
+			Entity target = Entity.FromHandle(handle);
+			if (target == null)
+			{
+				return false;
+			}
+			Game.Player.Character.Task.GoTo(target, new Vector3(1.0f, 1.0f, 1.0f));
+			return true;
+		}
+
 		public static bool walkTo(Entity target)
 		{
 			if (target == null)
@@ -122,51 +134,11 @@ namespace GTA
 			Game.Player.Character.Task.GoTo(target, new Vector3(1.0f, 1.0f, 1.0f));
 			return true;
 		}
-		public static void walkToModel(int model)
-		{
-			var entities = World.GetAllEntities();
-			foreach (var entity in entities)
-			{
-				if (entity.Model.Hash == model)
-				{
-					GTA.UI.Screen.ShowSubtitle($"in walkToModel, found model, pos:{entity.Position}");
-					var vehicle = Game.Player.Character.CurrentVehicle;
-					if (vehicle != null)
-					{
-						Game.Player.Character.Task.DriveTo(vehicle, entity.Position, 10, VehicleDrivingFlags.None, 10);
-					}
-					else
-					{
-						Game.Player.Character.Task.GoTo(entity);
-					}
-					break;
-				}
-			}
-		}
-		public void walkTo(int hash)
-		{
-			var entities = World.GetAllEntities();
-			foreach (var entity in entities)
-			{
-				if (entity.GetHashCode() == hash)
-				{
-					var vehicle = Game.Player.Character.CurrentVehicle;
-					if (vehicle != null)
-					{
-						Game.Player.Character.Task.DriveTo(vehicle, entity.Position, 10, VehicleDrivingFlags.None, 10);
-					}
-					else
-					{
-						Game.Player.Character.Task.GoTo(entity);
-					}
 
-					break;
-				}
-			}
-		}
 		public static bool walkToPos(Vector3 pos)
 		{
 			Game.Player.Character.Task.GoTo(pos);
+			
 			return true;
 		}
 
@@ -195,7 +167,18 @@ namespace GTA
 			Game.Player.Character.Task.RunTo(target.Position + new Vector3(-1.3f, -1.3f, 1.0f));
 			return true;
 		}
-		
+
+		public static bool runTo(int handle)
+		{
+			Entity target = Entity.FromHandle(handle);	
+			if (target == null)
+			{
+				return false;
+			}
+			Game.Player.Character.Task.RunTo(target.Position + new Vector3(-1.3f, -1.3f, 1.0f));
+			return true;
+		}
+
 		// swim to an object
 		public static bool swimTo(Entity target)
 		{
@@ -207,13 +190,17 @@ namespace GTA
 			player.Task.RunTo(target.Position);
 			return true;
 		}
-		
-		/*
-		public void getOnNearByVehicle()
+		public static bool swimTo(int handle)
 		{
-			Game.Player.Character.Task.EnterAnyVehicle();
+			Entity target = Entity.FromHandle(handle);
+			Ped player = Game.Player.Character;
+			if (player == null)
+			{
+				return false;
+			}
+			player.Task.RunTo(target.Position);
+			return true;
 		}
-		*/
 
 		public static bool getOnNearbyVehicle()
 		{
@@ -228,6 +215,21 @@ namespace GTA
 
 		public static bool getOnVehicle(Entity target)
 		{
+			if (target != null)
+			{
+				Vehicle car = target as Vehicle;
+				if (car != null && car.IsDriveable)
+				{
+					Game.Player.Character.Task.EnterVehicle(car, VehicleSeat.Driver);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public static bool getOnVehicle(int handle)
+		{
+			Entity target = Entity.FromHandle(handle);
 			if (target != null)
 			{
 				Vehicle car = target as Vehicle;
@@ -276,6 +278,22 @@ namespace GTA
 			return false;
 		}
 
+		public static bool driveTo(int tool_handle, int target_handle)
+		{
+			Entity tool = Entity.FromHandle(tool_handle);
+			Entity target = Entity.FromHandle(target_handle);
+			if (target == null)
+			{
+				return false;
+			}
+			Vehicle vehicle = tool as Vehicle;
+			if (vehicle != null)
+			{
+				Game.Player.Character.Task.DriveTo(vehicle, target.Position, 5.0f, 10.0f);
+				return true;
+			}
+			return false;
+		}
 
 		//player sound horn in car (not working)
 		public void pressHorn()
@@ -320,6 +338,12 @@ namespace GTA
 			player.Task.GoTo(target);
 		}
 
+		private void climbLadderTo(int handle)
+		{
+			Entity target = Entity.FromHandle(handle);
+			Ped player = Game.Player.Character;
+			player.Task.GoTo(target);
+		}
 		//talk to someone (no real conversations, just gestures acting like the player is talking)
 		public void talkTo(int target_ped_hash)
 		{
@@ -373,20 +397,6 @@ namespace GTA
 		}
 
 		//aim gun at an object
-		public void aimGunAt(int hash)
-		{
-			var entities = World.GetAllEntities();
-			foreach (var entity in entities)
-			{
-				if (entity.GetHashCode() == hash)
-				{
-					if (!Game.Player.Character.IsAiming)
-					{
-						Game.Player.Character.Task.AimGunAtEntity(entity, 5000);
-					}
-				}
-			}
-		}
 		public static bool aimAtByVector(Vector3 vec, int duration = 5000)
 		{
 			Ped player = Game.Player.Character;
@@ -406,8 +416,9 @@ namespace GTA
 			return true;
 		}
 		
-		public static bool aimAtTarget(Entity target, int duration = 10000)
+		public static bool aimAtTarget(int handle, int duration = 10000)
 		{
+			Entity target = Entity.FromHandle(handle);
 			Ped player = Game.Player.Character;
 			if (target == null)
 			{
@@ -423,7 +434,7 @@ namespace GTA
 			Function.Call(Hash.TASK_AIM_GUN_AT_ENTITY, player, target, duration, false);
 			//Wait(1000);
 
-			if (checkAimTarget(target))
+			if (checkAimTarget(target.Handle))
 			{
 				Log.Message(Log.Level.Info, "aimAtTarget: Aim success!");
 				return true;
@@ -433,8 +444,9 @@ namespace GTA
 			return true;
 		}
 
-		public static bool checkAimTarget(Entity target)
+		public static bool checkAimTarget(int handle)
 		{
+			Entity target = Entity.FromHandle(handle);
 			if (Game.Player.IsAiming)
 			{
 				Entity targetedEntity = Game.Player.TargetedEntity;
@@ -450,15 +462,16 @@ namespace GTA
 			return false;
 		}
 
-		public static bool hitTarget(Entity target)
+		public static bool hitTarget(int handle)
 		{
+			Entity target = Entity.FromHandle(handle);
 			if (target == null || !target.Exists())
 			{
 				Log.Message(Log.Level.Info, "hitTarget: target does not exist ! Failed!");
 				return false;
 			}
 			
-			if (!checkAimTarget(target))
+			if (!checkAimTarget(handle))
 			{
 				Log.Message(Log.Level.Info, "hitTarget: target is not aimed! ");
 				//return false;
@@ -519,10 +532,38 @@ namespace GTA
 			}
 			return false;
 		}
+
+		public static bool letChase(int handle)
+		{
+			Ped player = Game.Player.Character;
+			Ped target = Entity.FromHandle(handle) as Ped;
+			if (target.Exists() && player.Exists())
+			{
+
+				target.Task.FollowToOffsetFromEntity(player, new Vector3(0.2f, 0.2f, 0.0f), 2.0f);
+				return true;
+			}
+			return false;
+		}
+
 		public static bool letFollow(Ped target)
 		{
 			Ped player = Game.Player.Character;
 
+			if (target.Exists() && player.Exists())
+			{
+				float distanceToPlayer = target.Position.DistanceTo(player.Position);
+
+				target.Task.FollowToOffsetFromEntity(player, new Vector3(0.2f, 0.3f, 0.0f), 1.0f);
+				return true;
+			}
+			return false;
+		}
+		public static bool letFollow(int handle)
+		{
+			Ped player = Game.Player.Character;
+			Entity entity = Entity.FromHandle(handle);
+			Ped target = entity as Ped;
 			if (target.Exists() && player.Exists())
 			{
 				float distanceToPlayer = target.Position.DistanceTo(player.Position);
@@ -537,6 +578,21 @@ namespace GTA
 		{
 			Ped player = Game.Player.Character;
 
+			if (target.Exists() && player.Exists())
+			{
+				float distanceToPlayer = target.Position.DistanceTo(player.Position);
+
+				if (distanceToPlayer <= 5.0f)
+				{
+					target.Task.ClearAllImmediately();
+				}
+			}
+		}
+
+		public static void letStopFollow(int handle)
+		{
+			Ped player = Game.Player.Character;
+			Ped target = Entity.FromHandle(handle) as Ped;
 			if (target.Exists() && player.Exists())
 			{
 				float distanceToPlayer = target.Position.DistanceTo(player.Position);
@@ -570,8 +626,52 @@ namespace GTA
 			return false;
 		}
 
+		public static bool letOn(int tool_handle, int target_handle)
+		{
+			Entity tool = Entity.FromHandle(tool_handle);
+			Entity target = Entity.FromHandle(target_handle);	
+			Ped player = Game.Player.Character;
+			Vehicle car = tool as Vehicle;
+			Ped ped = target as Ped;
+			if (ped.Exists() && player.Exists() && car.Exists())
+			{
+				//Log.Message(Log.Level.Debug, "letDogOnCar.");
+				float distanceToCar = target.Position.DistanceTo(car.Position);
+				bool isFrontRightDoorOpen = car.Doors[VehicleDoorIndex.FrontRightDoor].IsOpen;
+				if (distanceToCar <= 5.0f && isFrontRightDoorOpen)
+				{
+					//GTA.UI.Notification.Show("RightFront door is open, letting chop into the car...");
+					ped.Task.ClearAllImmediately();
+					ped.Task.EnterVehicle(car, VehicleSeat.RightFront);
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public static bool stopFight(Ped target1, Ped  target2)
 		{
+			Ped player = Game.Player.Character;
+			if (target1.Exists() && target2.Exists() && player.Exists())
+			{
+				float distance1 = target1.Position.DistanceTo(player.Position);
+				float distance2 = target2.Position.DistanceTo(player.Position);
+
+				if (distance1 <= 8.0f || distance2 <= 8.0f)
+				{
+					player.Task.PlayAnimation("anim@heists@ornate_bank@chat_manager", "average_clothes");
+					target1.Task.ClearAllImmediately();
+					target2.Task.ClearAllImmediately();
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public static bool stopFight(int target1_handle, int target2_handle)
+		{
+			Ped target1 = Entity.FromHandle(target1_handle) as Ped;
+			Ped target2 = Entity.FromHandle(target2_handle) as Ped;
 			Ped player = Game.Player.Character;
 			if (target1.Exists() && target2.Exists() && player.Exists())
 			{
@@ -705,40 +805,17 @@ namespace GTA
 			}
 			changeToFirstPersonView();
 			await Task.Delay(500);
-		}
 
-		
-		
-		/*
-		public static bool getInNearbyDoor(Entity door)
-		{
-			var player = Game.Player.Character;
-			var nearbyEntities = World.GetNearbyEntities(player.Position, 10f);
-
-			foreach (var entity in nearbyEntities)
+			string signalFilePath = "D:\\test\\complete.signal";
+			using (var fs = new FileStream(signalFilePath, FileMode.Create))
 			{
-				// 你需要找到判断实体是否为门的方法
-				// 也许你可以通过模型名称、散列值等来判定
-				if (isDoor(door))
+				using (var writer = new StreamWriter(fs))
 				{
-					// 尝试打开门，并观察结果
-					if  (tryOpenDoor(door))
-					{
-						// 如果门打开了，给玩家一个去那个位置的任务
-						player.Task.GoTo(door.Position);
-						return true;
-					}
+					await writer.WriteLineAsync("Completion signal created at: " + DateTime.Now.ToString());
 				}
 			}
-			return false;
 		}
 
-		bool isDoor(Entity obj)
-		{
-			World.getclosest
-		}
-
-		*/
 
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,22 @@ namespace GTA
 		{
 
 		}
-		
+		public virtual void CreateFile()
+		{
+			string className = GetType().Name;
+			string baseFolderPath = @"D:\GTA\Missions\";
+			string folderPath = Path.Combine(baseFolderPath, className);
+
+			Directory.CreateDirectory(folderPath);
+			string filePath = Path.Combine(folderPath, "mission_info.txt");
+
+			string content = GetMissionInfo();
+			File.WriteAllText(filePath, content);
+		}
+
+		protected virtual string GetMissionInfo()
+		{
+			return "Default Mission Information";
+		}
 	}
 }
