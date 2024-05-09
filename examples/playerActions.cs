@@ -25,10 +25,10 @@ namespace GTA
 
 		public void PlayerActions_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
-			/*
+			
 			if (e.KeyCode == Keys.F9)
 			{
-				aimAtByVector(new Vector3(0, 0, 0));
+				showPlayerPos();
 			}
 			//if (e.KeyCode == Keys.F10)
 			{
@@ -36,9 +36,9 @@ namespace GTA
 			}
 			if (e.KeyCode == Keys.F11)
 			{
-				changeToThirdPersonView();
+				
 			}
-			*/
+			
 		}
 
 		public void PlayerAction_OnTick(object sender, EventArgs e)
@@ -814,6 +814,12 @@ namespace GTA
 					await writer.WriteLineAsync("Completion signal created at: " + DateTime.Now.ToString());
 				}
 			}
+		}
+
+		public static void changePos(float x, float y, float z)
+		{
+			Ped player = Game.Player.Character;
+			player.Position = new Vector3(x, y, z);
 		}
 
 
