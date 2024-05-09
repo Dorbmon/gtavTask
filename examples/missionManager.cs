@@ -15,11 +15,16 @@ namespace GTA
 		List<mission> missions = new List<mission>();
 		Random rand = new Random();
 		private bool isClearPressed = false;
+		private bool isRunningMissions = false;
 
 		private string missionInfoFolderPath = @"D:\GTA\Missions\"; 
 		private string missionInfoFileName = "CurrentMissionInfo.txt";
 		private string missionInfoFilePath;
 
+		private mission currentMission = null;
+		private int currentMissionIndex = -1;
+		private DateTime missionStartTime = DateTime.MinValue;
+		private int MISSION_MAX_TIME = 600;
 		public missionManager()
 		{
 			Tick += OnTick;
@@ -33,9 +38,38 @@ namespace GTA
 			missionInfoFilePath = Path.Combine(missionInfoFolderPath, missionInfoFileName);
 			File.WriteAllText(missionInfoFilePath, "");
 		}
+
 		private void OnTick(object sender, EventArgs e)
 		{
-			
+			//Log.Message(Log.Level.Info, "OnTick called ", ".");
+			if (isRunningMissions && currentMissionIndex < missions.Count)
+			{
+				var mission = missions[currentMissionIndex];
+				TimeSpan timeSpan = DateTime.Now - missionStartTime;
+				if (!mission.is_mission_finished() && timeSpan.TotalSeconds < MISSION_MAX_TIME)
+				{
+					mission.Update();
+				}
+				else
+				{
+					mission.destroy();
+					currentMissionIndex++;
+					if (currentMissionIndex < missions.Count)
+					{
+						missions[currentMissionIndex].load();
+						missionStartTime = DateTime.Now;
+					}
+					else
+					{
+						isRunningMissions = false;
+					}
+				}
+			}
+			if (isClearPressed)
+			{
+				clearMissions();
+				isClearPressed = false;
+			}
 		}
 		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
@@ -43,7 +77,13 @@ namespace GTA
 				// start to do missions
 				clearMissions();
 				loadMissions();
-				runMissionLoop();
+				if (missions.Any())
+				{
+					missions[0].load();
+					isRunningMissions = true;
+					currentMissionIndex = 0;
+					missionStartTime = DateTime.Now;
+				}
 			}
 			if (e.KeyCode == Keys.F8)
 			{
@@ -55,59 +95,16 @@ namespace GTA
 		{
 
 		}
-		private void runMissionLoop()
-		{
-			for (int i = 0;i < missions.Count;i ++ )
-			{
-				int mission_id = rand.Next() % missions.Count;
-				var mission = missions[i];
-				UpdateCurrentMissionInfo(mission.GetType().Name, i);
-
-				mission.load();
-				reset_lm();
-				var begin = DateTime.Now;
-				bool finished = true;
-				while (!mission.is_mission_finished())
-				{
-					Yield();
-					
-					if (DateTime.Now.Subtract(begin).TotalSeconds > 600)
-					{
-						// mission failed
-						finished = false;
-						break;
-					}
-
-					if (isClearPressed)
-					{
-						Log.Message(Log.Level.Info, "F11 is pressed, mission set finish ", ".");
-						finished = false;
-						break;
-					}
-					
-				}
-				if (finished)
-				{
-					GTA.UI.Notification.Show("mission done!");
-				} else
-				{
-					GTA.UI.Notification.Show("mission failed!");
-				}
-				mission.destroy();
-				if (isClearPressed)
-				{
-					Log.Message(Log.Level.Info, "F11 is pressed, call clearMissions ", ".");
-					clearMissions();
-					isClearPressed = false;
-				}
-			}
-		}
+		
 		private void loadMissions()
 		{
 			//missions.Add(InstantiateScript<mission_hit1>());
 			
-			missions.Add(InstantiateScript<mission_dog_follow1>());
-			missions.Add(InstantiateScript<mission_dog_follow2>());
+			//missions.Add(InstantiateScript<mission_vehicle_loop>());
+			//missions.Add(InstantiateScript<event_on_off_vehicle_loop>());
+			//missions.Add(InstantiateScript<event_animation>());
+			missions.Add(InstantiateScript<event_time_loop>());
+			//missions.Add(InstantiateScript<mission_dog_follow2>());
 			/*
 			missions.Add(InstantiateScript<mission_stop_fighting2>());
 			missions.Add(InstantiateScript<mission_stop_fighting3>());
@@ -132,10 +129,6 @@ namespace GTA
 			missions.Add(InstantiateScript<mission_boat4>());
 			missions.Add(InstantiateScript<mission_boat5>());
 			*/
-
-
-
-
 		}
 		private void clearMissions()
 		{
@@ -155,6 +148,21 @@ namespace GTA
 		{
 			string content = $"Current Mission: {missionClassName}\nMission ID: {missionId}";
 			File.WriteAllText(missionInfoFilePath, content);
+		}
+
+		
+	}
+
+	public static class RandomEnumPicker
+	{
+		private static Random random = new Random();
+
+		// 泛型方法，用于从任何枚举类型中随机选择一个值
+		public static T GetRandomEnumValue<T>() where T : Enum
+		{
+			Array values = Enum.GetValues(typeof(T));
+			T randomValue = (T)values.GetValue(random.Next(values.Length));
+			return randomValue;
 		}
 	}
 }

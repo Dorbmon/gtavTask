@@ -38,6 +38,10 @@ namespace GTA
 		{
 
 		}
+		public virtual void Update()
+		{
+
+		}
 		public virtual void CreateFile()
 		{
 			string className = GetType().Name;
