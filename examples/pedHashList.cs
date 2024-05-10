@@ -161,4 +161,25 @@ namespace GTA
 		WillyFist = 2423691919u,
 		*/
 	}
+
+	public enum AnimalHash : uint
+	{
+		Cat = 1462895032u,
+		Cormorant = 1457690978u,
+		Cow = 4244282910u,
+		Coyote = 1682622302u,
+		Deer = 3630914197u,
+		Hen = 1794449327u,
+		Husky = 1318032802u,
+		MountainLion = 307287994u,
+		Pig = 2971380566u,
+		Poodle = 1125994524u,
+		Pug = 1832265812u,
+		Rabbit = 3753204865u,
+		Rat = 3283429734u,
+		Retriever = 882848737u,
+		Rottweiler = 2506301981u,
+		Shepherd = 1126154828u,
+		Westy = 2910340283u,
+	}
 }

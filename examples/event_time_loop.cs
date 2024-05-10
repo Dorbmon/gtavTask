@@ -130,7 +130,7 @@ namespace GTA
 					{
 						lastLogTime = DateTime.Now;
 						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, time update, " +
-												$"currentTimeofDay={World.CurrentTimeOfDay.ToString()}" +
+												$"currentTimeofDay={World.CurrentTimeOfDay.ToString()}, " +
 												$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 					}
 					break;
