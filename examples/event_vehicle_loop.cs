@@ -167,13 +167,15 @@ namespace GTA
 					float offsetY = (float)(random.NextDouble() * 10.0 - 5.0); 
 					Vector3 pedPosition = new Vector3(carGenPos.X + offsetX, carGenPos.Y + offsetY, carGenPos.Z);
 					ped = World.CreatePed(_pedHash, pedPosition);
-					
-					Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, generate car and npc, " +
-												$"car:hash_name={_vehicleHash.ToString()}, hash_code={vehicle.Model.GetHashCode().ToString()}, generate_position={carGenPos.ToString()}, " +
-												$"primary_color={vehicle.Mods.PrimaryColor.ToString()}, secondary_color={vehicle.Mods.SecondaryColor.ToString()}, " +
-												$"NPC:hash_name={_pedHash.ToString()}, hash_code={ped.Model.GetHashCode()}, generate_position={pedPosition.ToString()}, " +
+					if (ped != null && vehicle != null)
+					{
+						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, generate car and npc, " +
+												$"vehicle:" + Logger.GenLog(vehicle) + ", " +
+												$"NPC:" + Logger.GenLog(ped) + ", " +
 												$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
-					curState = State.NpcDriveFirst;
+						curState = State.NpcDriveFirst;
+					}
+					
 					break;
 				case State.NpcDriveFirst:
 					Wait(500);
@@ -182,7 +184,8 @@ namespace GTA
 					if (vehicle.Position.DistanceTo(carThoughPos) < 8.0f)
 					{
 						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, drive to first stop point, " +
-													$"stop_position={carThoughPos.ToString()}, " +
+													$"vehicle" + Logger.GenLog(vehicle) + ", " +
+													$"NPC:" + Logger.GenLog(ped) + ", " +
 													$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 						curState = State.NpcDriveSecond;
 					}
@@ -194,7 +197,8 @@ namespace GTA
 					if (vehicle.Position.DistanceTo(carStopPos) < 8.0f)
 					{
 						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}::{curState.ToString()}, drive to second stop point, " +
-													$"stop_position={carStopPos.ToString()}, " +
+													$"vehicle" + Logger.GenLog(vehicle) + ", " +
+													$"NPC:" + Logger.GenLog(ped) + ", " +
 													$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}.");
 						curState = State.NpcExitAndWalk;
 					}
@@ -208,6 +212,8 @@ namespace GTA
 					if (ped.Position.DistanceTo(npcGenPos) < 2.0f)
 					{
 						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}::{curState.ToString()}, npc exit the car, " +
+													$"vehicle:" + Logger.GenLog(vehicle) + ", " +
+													$"NPC:" + Logger.GenLog(ped) + ", " +
 													$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}.");
 						curState = State.NpcDisappear;
 					}
@@ -218,8 +224,8 @@ namespace GTA
 					{
 						ped.Delete();
 						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, npc disappear, " +
-												$"NPC:hash_name={_pedHash.ToString()}, hash_code={ped.Model.GetHashCode()}, disapper_position={npcGenPos.ToString()}, " +
-												$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
+													$"NPC:" + Logger.GenLog(ped) + ", " +
+													$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 						curState = State.NpcSpawn;
 					}
 					break;
@@ -229,7 +235,7 @@ namespace GTA
 					_pedHash = (PedHash)randomPed1;
 					ped = World.CreatePed(_pedHash, npcGenPos);
 					Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, generate new npc, " +
-												$"NPC:hash_name={_pedHash.ToString()}, hash_code={ped.Model.GetHashCode()}, generate_position={npcGenPos.ToString()}, " +
+												$"NPC:" + Logger.GenLog(ped) + ", " +
 												$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 					Wait(500);
 					curState = State.NpcWalkToVehicle;
@@ -242,7 +248,9 @@ namespace GTA
 					if (ped.Position.DistanceTo(carPos) < 5.0f)
 					{
 						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, npc walk to vehicle, " +
-												$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
+													$"vehicle:" + Logger.GenLog(vehicle) + ", " +
+													$"NPC:" + Logger.GenLog(ped) + ", " +
+													$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 						curState = State.NpcDriveBack;
 					}
 					
@@ -253,9 +261,9 @@ namespace GTA
 					Wait(10000);
 					if (vehicle.Position.DistanceTo(carThoughPos2) < 8.0f)
 					{
-						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, " +
-												$"npc drive car back stage 1, stop_position={carThoughPos2.ToString()}, " +
-												$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
+						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, npc drive car back stage 1," +
+													$"vehicle:" + Logger.GenLog(vehicle) + ", " +
+													$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 						curState = State.NpcDriveBack2;
 					}
 					break;
@@ -265,15 +273,14 @@ namespace GTA
 					Wait(5000);
 					if (vehicle.Position.DistanceTo(carEndPos) < 8.0f)
 					{
-						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}," +
-												$" npc drive car back stage 2, stop_position={carEndPos.ToString()}, " +
-												$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
+						Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, npc drive car back stage 2, " +
+													$"vehicle:" + Logger.GenLog(vehicle) + ", " +
+													$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 						curState = State.CleanupAndRestart;
 					}
 					break;
 				case State.CleanupAndRestart:
 					int totalSeconds = (int)timespan.TotalSeconds;
-					Log.Message(Log.Level.Info, $"before:seconds={totalSeconds.ToString()}, timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 					int secondsToNext30Multiple = 30 - (totalSeconds % 30);
 					if (secondsToNext30Multiple == 30)
 					{
@@ -285,9 +292,6 @@ namespace GTA
 
 					vehicle.Delete();
 					ped.Delete();
-					
-					Log.Message(Log.Level.Info, $"before:seconds={seconds.ToString()}, timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
-					Log.Message(Log.Level.Info, $"{this.GetType().Name}::CleanupAndRestart");
 					Log.Message(Log.Level.Info, $"{DateTime.Now}: {this.GetType().Name}:{curState.ToString()}, car and npc clean up and restart." +
 												$"timespan={timespan.Hours}:{timespan.Minutes}:{timespan.Seconds}");
 					Wait(500);
