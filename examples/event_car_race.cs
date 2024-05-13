@@ -85,7 +85,7 @@ namespace GTA
 			Ped player = Game.Player.Character;
 			player.Task.ClearAllImmediately();
 			changePos(ref playerPos, -819, 192, 73);
-			changePos(ref carGenPos1, -799, 164, 71);
+			changePos(ref carGenPos1, -799, 163.5f, 71);
 			changePos(ref carGenPos2, -790, 163, 72);
 			changePos(ref carEndPos1, -839, 156, 67);
 			changePos(ref carEndPos2, -834, 156, 67);
