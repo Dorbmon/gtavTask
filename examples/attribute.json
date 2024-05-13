@@ -1,0 +1,2116 @@
+[
+    {
+        "name": "Abigail",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "navy blue",
+            "bottom": "pants",
+            "bottom color": "white"
+        }
+    },
+    {
+        "name": "Abner",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "none",
+            "top color": "none",
+            "bottom": "shorts",
+            "bottom color": "grey"
+        }
+    },
+    {
+        "name": "Agent14",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "brown",
+            "bottom": "pants",
+            "bottom color": "grey"
+        }
+    },
+    {
+        "name": "AlDiNapoli",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "tank top",
+            "top color": "black",
+            "bottom": "pants",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "AmandaTownley",
+		"sex": "female",
+        "hair": {
+            "type": "tied back",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "white",
+            "bottom": "skirt",
+            "bottom color": "white"
+        }
+    },
+    {
+        "name": "Andreas",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "shirt",
+            "top color": "blue",
+            "bottom": "pants",
+            "bottom color": "dark grey"
+        }
+    },
+    {
+        "name": "Armoured01",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "n/a"
+        },
+        "clothing": {
+            "top": "vest",
+            "top color": "green",
+            "bottom": "pants",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Ashley",
+		"sex": "female",
+        "hair": {
+            "type": "medium",
+            "color": "red"
+        },
+        "clothing": {
+            "top": "shirt",
+            "top color": "grey",
+            "bottom": "skirt",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "AviSchwartzman",
+		"sex": "male",
+        "hair": {
+            "type": "curly",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "printed shirt",
+            "top color": "pink with floral pattern",
+            "bottom": "shorts",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "Bankman",
+		"sex": "male",
+        "hair": {
+            "type": "combed",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "suit jacket",
+            "top color": "gray",
+            "bottom": "slacks",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Bankman01",
+		"sex": "male",
+        "hair": {
+            "type": "combed back",
+            "color": "gray"
+        },
+        "clothing": {
+            "top": "suit jacket",
+            "top color": "dark blue",
+            "bottom": "slacks",
+            "bottom color": "dark blue"
+        }
+    },
+    {
+        "name": "Barry",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "suit jacket",
+            "top color": "gray",
+            "bottom": "slacks",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Baygor",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "polo shirt",
+            "top color": "blue",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Benny",
+		"sex": "male",
+        "hair": {
+            "type": "bald with a beard",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "buttoned shirt",
+            "top color": "dark blue",
+            "bottom": "shorts",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Beverly",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "vest jacket with t-shirt",
+            "top color": "green and white",
+            "bottom": "shorts",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "BikeHire01",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "dark brown"
+        },
+        "clothing": {
+            "top": "long-sleeve T-shirt",
+            "top color": "red and gray",
+            "bottom": "shorts",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "BikerChic",
+		"sex": "female",
+        "hair": {
+            "type": "bob",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "see-through bodysuit",
+            "top color": "brown",
+            "bottom": "leather skirt",
+            "bottom color": "green"
+        }
+    },
+    {
+        "name": "BoatStaff01F",
+		"sex": "female",
+        "hair": {
+            "type": "shoulder-length",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "V-neck shirt",
+            "top color": "black",
+            "bottom": "knee-length skirt",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "BoatStaff01M",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "gray"
+        },
+        "clothing": {
+            "top": "short-sleeve button-up shirt",
+            "top color": "white",
+            "bottom": "pants",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Brad",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "tan",
+            "bottom": "pants",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Bride",
+		"sex": "female",
+        "hair": {
+            "type": "bun",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "strapless dress",
+            "top color": "light gray",
+            "bottom": "dress",
+            "bottom color": "light gray"
+        }
+    },
+    {
+        "name": "BurgerDrug",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "polo shirt",
+            "top color": "red",
+            "bottom": "pants",
+            "bottom color": "navy blue"
+        }
+    },
+    {
+        "name": "Car3Guy1",
+		"sex": "male",
+        "hair": {
+            "type": "Short and slightly wavy",
+            "color": "Black"
+        },
+        "clothing": {
+            "top": "Button-down shirt",
+            "top color": "Dark gray",
+            "bottom": "Pants",
+            "bottom color": "Black"
+        }
+    },
+    {
+        "name": "Car3Guy2",
+		"sex": "male",
+        "hair": {
+            "type": "Short",
+            "color": "Light brown"
+        },
+        "clothing": {
+            "top": "Long sleeve top",
+            "top color": "Light gray",
+            "bottom": "Denim jeans",
+            "bottom color": "Blue"
+        }
+    },
+    {
+        "name": "Casey",
+		"sex": "male",
+        "hair": {
+            "type": "Buzz cut",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Military style shirt",
+            "top color": "Green with black vest",
+            "bottom": "Pants",
+            "bottom color": "Black"
+        }
+    },
+    {
+        "name": "Chef",
+		"sex": "male",
+        "hair": {
+            "type": "Bald with beard",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Apron",
+            "top color": "Green",
+            "bottom": "Pants",
+            "bottom color": "Brown"
+        }
+    },
+    {
+        "name": "Chef2",
+		"sex": "male",
+        "hair": {
+            "type": "Bald with beard",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Apron",
+            "top color": "Green",
+            "bottom": "Pants",
+            "bottom color": "Brown"
+        }
+    },
+    {
+        "name": "Chip",
+		"sex": "male",
+        "hair": {
+            "type": "Short with pattern",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Shirt with suspenders",
+            "top color": "Blue with red suspenders",
+            "bottom": "Pants",
+            "bottom color": "Black"
+        }
+    },
+    {
+        "name": "Claude01",
+		"sex": "male",
+        "hair": {
+            "type": "Short",
+            "color": "Dark brown"
+        },
+        "clothing": {
+            "top": "Leather jacket",
+            "top color": "Black",
+            "bottom": "Pants",
+            "bottom color": "Olive green"
+        }
+    },
+    {
+        "name": "Clay",
+		"sex": "male",
+        "hair": {
+            "type": "shaved",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "vest",
+            "top color": "brown",
+            "bottom": "jeans",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Cletus",
+		"sex": "male",
+        "hair": {
+            "type": "mullet",
+            "color": "blond"
+        },
+        "clothing": {
+            "top": "tank top",
+            "top color": "brown",
+            "bottom": "cargo pants",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "ComJane",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "red"
+        },
+        "clothing": {
+            "top": "blouse",
+            "top color": "pink",
+            "bottom": "slacks",
+            "bottom color": "beige"
+        }
+    },
+    {
+        "name": "CrisFormage",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "military uniform",
+            "top color": "light blue",
+            "bottom": "military pants",
+            "bottom color": "light blue"
+        }
+    },
+    {
+        "name": "Cyclist01",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "none"
+        },
+        "clothing": {
+            "top": "cycling jersey",
+            "top color": "black and red",
+            "bottom": "cycling shorts",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Dale",
+		"sex": "male",
+        "hair": {
+            "type": "curly",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "shirt",
+            "top color": "green",
+            "bottom": "jeans",
+            "bottom color": "dark blue"
+        }
+    },
+    {
+        "name": "DaveNorton",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "blazer",
+            "top color": "beige",
+            "bottom": "slacks",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "Denise",
+		"sex": "female",
+        "hair": {
+            "type": "Braided updo",
+            "color": "Black"
+        },
+        "clothing": {
+            "top": "Tank Top",
+            "top color": "Light Blue",
+            "bottom": "Leggings",
+            "bottom color": "Black"
+        }
+    },
+    {
+        "name": "Devin",
+		"sex": "male",
+        "hair": {
+            "type": "Short",
+            "color": "Blonde"
+        },
+        "clothing": {
+            "top": "T-shirt",
+            "top color": "Grey",
+            "bottom": "Shorts",
+            "bottom color": "Black"
+        }
+    },
+    {
+        "name": "DoaMan",
+		"sex": "male",
+        "hair": {
+            "type": "Short",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Jacket",
+            "top color": "Navy",
+            "bottom": "Pants",
+            "bottom color": "Grey"
+        }
+    },
+    {
+        "name": "Dom",
+		"sex": "male",
+        "hair": {
+            "type": "Short",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Sports jacket",
+            "top color": "Grey",
+            "bottom": "Trousers",
+            "bottom color": "Black"
+        }
+    },
+    {
+        "name": "Dreyfuss",
+		"sex": "male",
+        "hair": {
+            "type": "Receding",
+            "color": "Grey"
+        },
+        "clothing": {
+            "top": "Vest",
+            "top color": "Purple",
+            "bottom": "Trousers",
+            "bottom color": "Black"
+        }
+    },
+    {
+        "name": "DrFriedlander",
+		"sex": "male",
+        "hair": {
+            "type": "Curly",
+            "color": "Grey"
+        },
+        "clothing": {
+            "top": "Button shirt",
+            "top color": "Blue",
+            "bottom": "Pants",
+            "bottom color": "Beige"
+        }
+    },
+    {
+        "name": "Drowned",
+		"sex": "female",
+        "hair": {
+            "type": "Long straight",
+            "color": "Blonde"
+        },
+        "clothing": {
+            "top": "Bustier top",
+            "top color": "Black",
+            "bottom": "Skirt",
+            "bottom color": "Red"
+        }
+    },
+    {
+        "name": "EdToh",
+		"sex": "male",
+        "hair": {
+            "type": "Short",
+            "color": "Black"
+        },
+        "clothing": {
+            "top": "Jacket",
+            "top color": "Dark Gray",
+            "bottom": "Trousers",
+            "bottom color": "Olive Green"
+        }
+    },
+    {
+        "name": "ExArmy01",
+		"sex": "male",
+        "hair": {
+            "type": "Bald",
+            "color": "N/A"
+        },
+        "clothing": {
+            "top": "Vest",
+            "top color": "Olive Green",
+            "bottom": "Camouflage Pants",
+            "bottom color": "Gray Camouflage"
+        }
+    },
+    {
+        "name": "Fabien",
+		"sex": "male",
+        "hair": {
+            "type": "Short",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Tank Top",
+            "top color": "Black",
+            "bottom": "Shorts",
+            "bottom color": "Tan"
+        }
+    },
+    {
+        "name": "FilmDirector",
+		"sex": "male",
+        "hair": {
+            "type": "Comb Over",
+            "color": "Blonde"
+        },
+        "clothing": {
+            "top": "Denim Jacket",
+            "top color": "Blue",
+            "bottom": "Jeans",
+            "bottom color": "Gray"
+        }
+    },
+    {
+        "name": "FilmNoir",
+		"sex": "male",
+        "hair": {
+            "type": "Bald",
+            "color": "N/A"
+        },
+        "clothing": {
+            "top": "Suit",
+            "top color": "Striped Gray",
+            "bottom": "Suit Trousers",
+            "bottom color": "Striped Gray"
+        }
+    },
+    {
+        "name": "Floyd",
+		"sex": "male",
+        "hair": {
+            "type": "Curly",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Safety Vest",
+            "top color": "Orange and Reflective",
+            "bottom": "Jeans",
+            "bottom color": "Dark Gray"
+        }
+    },
+    {
+        "name": "FreemodeFemale01",
+		"sex": "female",
+        "hair": {
+            "type": "Bald",
+            "color": "N/A"
+        },
+        "clothing": {
+            "top": "Tank Top",
+            "top color": "Blue",
+            "bottom": "Jeans",
+            "bottom color": "Gray"
+        }
+    },
+    {
+        "name": "G",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "T-shirt",
+            "top color": "grey",
+            "bottom": "jeans",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Griff01",
+		"sex": "male",
+        "hair": {
+            "type": "shaved",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "blue, red and white",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Groom",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "suit",
+            "top color": "grey",
+            "bottom": "trousers",
+            "bottom color": "grey"
+        }
+    },
+    {
+        "name": "Guido01",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "tank top",
+            "top color": "variegated",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "GunVend01",
+		"sex": "male",
+        "hair": {
+            "type": "shaved",
+            "color": "dark brown"
+        },
+        "clothing": {
+            "top": "vest",
+            "top color": "light brown",
+            "bottom": "trousers",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "Hacker",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "t-shirt",
+            "top color": "grey",
+            "bottom": "jeans",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Hao",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "sleeveless shirt",
+            "top color": "black",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Hippie01",
+		"sex": "male",
+        "hair": {
+            "type": "long",
+            "color": "blond"
+        },
+        "clothing": {
+            "top": "tank top with logo",
+            "top color": "gray",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Hunter",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "quilted jacket",
+            "top color": "olive",
+            "bottom": "pants",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "Janet",
+		"sex": "female",
+        "hair": {
+            "type": "medium",
+            "color": "red"
+        },
+        "clothing": {
+            "top": "denim jacket",
+            "top color": "blue",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "JayNorris",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "blond"
+        },
+        "clothing": {
+            "top": "sweatshirt",
+            "top color": "gray",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Jesus01",
+		"sex": "male",
+        "hair": {
+            "type": "long",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "tunic",
+            "top color": "cream",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "JewelSec01",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "suit",
+            "top color": "black",
+            "bottom": "suit pants",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "JewelThief",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "suit",
+            "top color": "dark gray",
+            "bottom": "suit pants",
+            "bottom color": "dark gray"
+        }
+    },
+    {
+        "name": "JimmyBoston",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "dark brown"
+        },
+        "clothing": {
+            "top": "plaid button-down shirt",
+            "top color": "blue and white",
+            "bottom": "jeans",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "JimmyDisanto",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "light brown"
+        },
+        "clothing": {
+            "top": "jersey",
+            "top color": "black with red trim",
+            "bottom": "jeans",
+            "bottom color": "navy"
+        }
+    },
+    {
+        "name": "JoeMinuteman",
+		"sex": "male",
+        "hair": {
+            "type": "balding",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "leather jacket over plaid shirt",
+            "top color": "brown",
+            "bottom": "pants",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Josef",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "vest over shirt",
+            "top color": "green",
+            "bottom": "pants",
+            "bottom color": "green"
+        }
+    },
+    {
+        "name": "Josh",
+		"sex": "male",
+        "hair": {
+            "type": "styled",
+            "color": "blond"
+        },
+        "clothing": {
+            "top": "jacket over shirt",
+            "top color": "gray",
+            "bottom": "chinos",
+            "bottom color": "tan"
+        }
+    },
+    {
+        "name": "Justin",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "light brown"
+        },
+        "clothing": {
+            "top": "t-shirt",
+            "top color": "white",
+            "bottom": "shorts",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "KarenDaniels",
+		"sex": "female",
+        "hair": {
+            "type": "short and wavy",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "blazer",
+            "top color": "brown",
+            "bottom": "trousers",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "KerryMcintosh",
+		"sex": "female",
+        "hair": {
+            "type": "long and straight",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "tank top",
+            "top color": "gray",
+            "bottom": "mini skirt",
+            "bottom color": "gray and white"
+        }
+    },
+    {
+        "name": "LamarDavis",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "shirt",
+            "top color": "olive green",
+            "bottom": "jeans",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Lazlow",
+		"sex": "male",
+        "hair": {
+            "type": "short and curly",
+            "color": "blond"
+        },
+        "clothing": {
+            "top": "jacket over t-shirt",
+            "top color": "black over red",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "LesterCrest",
+		"sex": "male",
+        "hair": {
+            "type": "balding",
+            "color": "blond"
+        },
+        "clothing": {
+            "top": "plaid shirt",
+            "top color": "green and yellow",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Magenta",
+		"sex": "female",
+        "hair": {
+            "type": "mid-length and straight",
+            "color": "blonde with pink highlights"
+        },
+        "clothing": {
+            "top": "dress",
+            "top color": "white",
+            "bottom": "pants",
+            "bottom color": "white"
+        }
+    },
+    {
+        "name": "Mani",
+		"sex": "male",
+        "hair": {
+            "type": "short and curly",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "embroidered jacket",
+            "top color": "light brown and yellow",
+            "bottom": "jeans",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Manuel",
+		"sex": "male",
+        "hair": {
+            "type": "balding",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "buttoned shirt",
+            "top color": "light blue",
+            "bottom": "pants",
+            "bottom color": "dark gray"
+        }
+    },
+    {
+        "name": "Markfost",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "none"
+        },
+        "clothing": {
+            "top": "polo shirt",
+            "top color": "coral",
+            "bottom": "shorts",
+            "bottom color": "beige"
+        }
+    },
+    {
+        "name": "Marnie",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "polo shirt",
+            "top color": "teal",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Maude",
+		"sex": "female",
+        "hair": {
+            "type": "short wavy",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "tank top",
+            "top color": "grey",
+            "bottom": "shorts",
+            "bottom color": "purple"
+        }
+    },
+    {
+        "name": "Michelle",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "blazer over shirt",
+            "top color": "brown",
+            "bottom": "pants",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "MilitaryBum",
+		"sex": "male",
+        "hair": {
+            "type": "curly",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "olive green",
+            "bottom": "pants",
+            "bottom color": "charcoal"
+        }
+    },
+    {
+        "name": "Milton",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "tuxedo",
+            "top color": "black",
+            "bottom": "trousers",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Miranda",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "brown",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Mistress",
+		"sex": "female",
+        "hair": {
+            "type": "curly",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "blazer",
+            "top color": "black",
+            "bottom": "jeans",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Misty01",
+		"sex": "female",
+        "hair": {
+            "type": "straight",
+            "color": "red"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "green",
+            "bottom": "skirt",
+            "bottom color": "green"
+        }
+    },
+    {
+        "name": "Molly",
+		"sex": "female",
+        "hair": {
+            "type": "wavy",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "blazer",
+            "top color": "navy",
+            "bottom": "trousers",
+            "bottom color": "navy"
+        }
+    },
+    {
+        "name": "MovieStar",
+		"sex": "female",
+        "hair": {
+            "type": "wavy",
+            "color": "grey"
+        },
+        "clothing": {
+            "top": "dress",
+            "top color": "black",
+            "bottom": "dress",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "MPros01",
+		"sex": "male",
+        "hair": {
+            "type": "close-cut",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "leather jacket",
+            "top color": "grey",
+            "bottom": "trousers",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "MrK",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "light shirt",
+            "top color": "white",
+            "bottom": "pants",
+            "bottom color": "khaki"
+        }
+    },
+    {
+        "name": "MrsPhillips",
+		"sex": "female",
+        "hair": {
+            "type": "short curly",
+            "color": "red"
+        },
+        "clothing": {
+            "top": "leopard print dress",
+            "top color": "multicolor",
+            "bottom": "leggings",
+            "bottom color": "pink"
+        }
+    },
+    {
+        "name": "MrsThornhill",
+		"sex": "female",
+        "hair": {
+            "type": "curly",
+            "color": "gray"
+        },
+        "clothing": {
+            "top": "coat",
+            "top color": "beige",
+            "bottom": "skirt",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "Natalia",
+		"sex": "female",
+        "hair": {
+            "type": "straight",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "leather jacket",
+            "top color": "black",
+            "bottom": "leggings",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "NervousRon",
+		"sex": "male",
+        "hair": {
+            "type": "balding",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "shirt",
+            "top color": "red",
+            "bottom": "shorts",
+            "bottom color": "beige"
+        }
+    },
+    {
+        "name": "Nigel",
+		"sex": "male",
+        "hair": {
+            "type": "balding",
+            "color": "gray"
+        },
+        "clothing": {
+            "top": "blazer",
+            "top color": "beige",
+            "bottom": "pants",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "OldMan2",
+		"sex": "male",
+        "hair": {
+            "type": "balding",
+            "color": "gray"
+        },
+        "clothing": {
+            "top": "overalls",
+            "top color": "blue",
+            "bottom": "overalls",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Omega",
+		"sex": "male",
+        "hair": {
+            "type": "long",
+            "color": "blond"
+        },
+        "clothing": {
+            "top": "t-shirt",
+            "top color": "purple with galaxy print",
+            "bottom": "cargo pants",
+            "bottom color": "green"
+        }
+    },
+    {
+        "name": "Ortega",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "sleeveless t-shirt",
+            "top color": "white",
+            "bottom": "bermuda shorts",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Paige",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "t-shirt",
+            "top color": "gray",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "Paparazzi",
+		"sex": "male",
+        "hair": {
+            "type": "messy",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "hooded jacket",
+            "top color": "brown",
+            "bottom": "bermuda shorts",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Paper",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "gray"
+        },
+        "clothing": {
+            "top": "suit",
+            "top color": "gray",
+            "bottom": "suit pants",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Party01",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "t-shirt",
+            "top color": "orange",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "PartyTarget",
+		"sex": "male",
+        "hair": {
+            "type": "short curly",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "button shirt",
+            "top color": "red",
+            "bottom": "shorts",
+            "bottom color": "grey"
+        }
+    },
+    {
+        "name": "Patricia",
+		"sex": "female",
+        "hair": {
+            "type": "short curly",
+            "color": "ginger"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "purple",
+            "bottom": "pants",
+            "bottom color": "purple"
+        }
+    },
+    {
+        "name": "PestContDriver",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "work jumpsuit",
+            "top color": "red",
+            "bottom": "work jumpsuit",
+            "bottom color": "red"
+        }
+    },
+    {
+        "name": "PestContGunman",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "tactical suit",
+            "top color": "red",
+            "bottom": "tactical suit",
+            "bottom color": "red"
+        }
+    },
+    {
+        "name": "Pogo01",
+		"sex": "male",
+        "hair": {
+            "type": "none",
+            "color": "none"
+        },
+        "clothing": {
+            "top": "cosplay suit",
+            "top color": "red",
+            "bottom": "cosplay suit",
+            "bottom color": "red"
+        }
+    },
+    {
+        "name": "Popov",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "none"
+        },
+        "clothing": {
+            "top": "dress shirt",
+            "top color": "grey",
+            "bottom": "pants",
+            "bottom color": "beige"
+        }
+    },
+    {
+        "name": "Priest",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "grey"
+        },
+        "clothing": {
+            "top": "robe",
+            "top color": "black with multicolored stripes",
+            "bottom": "pants",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Princess",
+		"sex": "female",
+        "hair": {
+            "type": "bun",
+            "color": "auburn"
+        },
+        "clothing": {
+            "top": "blouse",
+            "top color": "dark gray",
+            "bottom": "skirt",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Prisoner01",
+		"sex": "male",
+        "hair": {
+            "type": "buzz cut",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "jumpsuit",
+            "top color": "orange",
+            "bottom": "jumpsuit",
+            "bottom color": "orange"
+        }
+    },
+    {
+        "name": "PrologueDriver",
+		"sex": "male",
+        "hair": {
+            "type": "covered",
+            "color": "not visible"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "navy blue",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "PrologueHostage01",
+		"sex": "female",
+        "hair": {
+            "type": "covered",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "red and blue",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "PrologueMournFemale01",
+		"sex": "female",
+        "hair": {
+            "type": "pulled back",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "coat",
+            "top color": "dark gray",
+            "bottom": "pants",
+            "bottom color": "dark gray"
+        }
+    },
+    {
+        "name": "PrologueMournMale01",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "dark brown"
+        },
+        "clothing": {
+            "top": "coat",
+            "top color": "dark gray",
+            "bottom": "pants",
+            "bottom color": "dark gray"
+        }
+    },
+    {
+        "name": "PrologueSec01",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "n/a"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "brown",
+            "bottom": "pants",
+            "bottom color": "olive"
+        }
+    },
+    {
+        "name": "PrologueSec02",
+		"sex": "male",
+        "hair": {
+            "type": "shaved",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "bomber jacket",
+            "top color": "brown",
+            "bottom": "pants",
+            "bottom color": "olive"
+        }
+    },
+    {
+        "name": "RampGang",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "n/a"
+        },
+        "clothing": {
+            "top": "varsity jacket",
+            "top color": "green",
+            "bottom": "pants",
+            "bottom color": "grey"
+        }
+    },
+    {
+        "name": "RampHic",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "tank top",
+            "top color": "grey",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "RampHipster",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "t-shirt",
+            "top color": "grey",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "RampMex",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "tank top",
+            "top color": "white",
+            "bottom": "pants",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "Rashkovsky",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "n/a"
+        },
+        "clothing": {
+            "top": "jumpsuit",
+            "top color": "orange",
+            "bottom": "jumpsuit pants",
+            "bottom color": "orange"
+        }
+    },
+    {
+        "name": "Solomon",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "gray"
+        },
+        "clothing": {
+            "top": "suit jacket",
+            "top color": "gray",
+            "bottom": "dress pants",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "SiemonYetarian",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "n/a"
+        },
+        "clothing": {
+            "top": "buttoned shirt",
+            "top color": "dark blue",
+            "bottom": "dress pants",
+            "bottom color": "brown"
+        }
+    },
+    {
+        "name": "ShopKeep01",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "shirt with apron",
+            "top color": "blue and gray",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "ScreenWriter",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "jacket over blouse",
+            "top color": "blue and orange",
+            "bottom": "skirt",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "RussianDrunk",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "n/a"
+        },
+        "clothing": {
+            "top": "shirt",
+            "top color": "olive green",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "RoccoPelosi",
+		"sex": "male",
+        "hair": {
+            "type": "spiky",
+            "color": "blonde"
+        },
+        "clothing": {
+            "top": "jacket over T-shirt",
+            "top color": "black and pink",
+            "bottom": "jeans",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "RivalPaparazzi",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "buttoned shirt",
+            "top color": "white",
+            "bottom": "shorts",
+            "bottom color": "gray"
+        }
+    },
+    {
+        "name": "SpyActor",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "tuxedo",
+            "top color": "white",
+            "bottom": "trousers",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "SpyActress",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "red"
+        },
+        "clothing": {
+            "top": "dress",
+            "top color": "black",
+            "bottom": "dress",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "StripperLite",
+		"sex": "female",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "bikini top",
+            "top color": "black",
+            "bottom": "bikini bottom",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Talina",
+		"sex": "male",
+        "hair": {
+            "type": "shoulder-length",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "khaki",
+            "bottom": "trousers",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "Tanisha",
+		"sex": "female",
+        "hair": {
+            "type": "long",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "jacket",
+            "top color": "blue",
+            "bottom": "capri pants",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "TaoCheng",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "shirt",
+            "top color": "light blue",
+            "bottom": "trousers",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "TaosTranslator",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "blazer",
+            "top color": "gray",
+            "bottom": "trousers",
+            "bottom color": "beige"
+        }
+    },
+    {
+        "name": "TennisCoach",
+		"sex": "male",
+        "hair": {
+            "type": "Styled",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Sports jacket",
+            "top color": "White",
+            "bottom": "Shorts",
+            "bottom color": "White"
+        }
+    },
+    {
+        "name": "Terry",
+		"sex": "male",
+        "hair": {
+            "type": "Buzz cut",
+            "color": "Brown"
+        },
+        "clothing": {
+            "top": "Vest",
+            "top color": "Black",
+            "bottom": "Pants",
+            "bottom color": "Black"
+        }
+    },
+    {
+        "name": "TomEpsilon",
+		"sex": "male",
+        "hair": {
+            "type": "Neatly styled",
+            "color": "Dark brown"
+        },
+        "clothing": {
+            "top": "Sweater vest",
+            "top color": "Blue",
+            "bottom": "Pants",
+            "bottom color": "Beige"
+        }
+    },
+    {
+        "name": "Tonya",
+		"sex": "female",
+        "hair": {
+            "type": "Curly",
+            "color": "Red"
+        },
+        "clothing": {
+            "top": "Blouse",
+            "top color": "Yellow",
+            "bottom": "Shorts",
+            "bottom color": "Blue"
+        }
+    },
+    {
+        "name": "TracyDisanto",
+		"sex": "female",
+        "hair": {
+            "type": "Short bob",
+            "color": "Blonde"
+        },
+        "clothing": {
+            "top": "Bikini top",
+            "top color": "Turquoise",
+            "bottom": "Shorts",
+            "bottom color": "Blue"
+        }
+    },
+    {
+        "name": "TrafficWarden",
+		"sex": "male",
+        "hair": {
+            "type": "Short",
+            "color": "Black"
+        },
+        "clothing": {
+            "top": "High visibility jacket",
+            "top color": "Yellow and Silver",
+            "bottom": "Pants",
+            "bottom color": "Navy"
+        }
+    },
+    {
+        "name": "Tramp01",
+		"sex": "male",
+        "hair": {
+            "type": "Messy",
+            "color": "Gray"
+        },
+        "clothing": {
+            "top": "Jacket",
+            "top color": "Beige",
+            "bottom": "Pants",
+            "bottom color": "Brown"
+        }
+    },
+    {
+        "name": "TylerDixon",
+		"sex": "male",
+        "hair": {
+            "type": "short",
+            "color": "black"
+        },
+        "clothing": {
+            "top": "none",
+            "top color": "none",
+            "bottom": "swim trunks",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "VagosFun01",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "none"
+        },
+        "clothing": {
+            "top": "shirt",
+            "top color": "white",
+            "bottom": "trousers",
+            "bottom color": "grey"
+        }
+    },
+    {
+        "name": "VagosSpeak",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "none"
+        },
+        "clothing": {
+            "top": "suit jacket",
+            "top color": "brown",
+            "bottom": "trousers",
+            "bottom color": "grey"
+        }
+    },
+    {
+        "name": "Wade",
+		"sex": "male",
+        "hair": {
+            "type": "bald",
+            "color": "none"
+        },
+        "clothing": {
+            "top": "sleeveless shirt",
+            "top color": "red and black",
+            "bottom": "jeans",
+            "bottom color": "blue"
+        }
+    },
+    {
+        "name": "WeiCheng",
+		"sex": "male",
+        "hair": {
+            "type": "shaved",
+            "color": "grey"
+        },
+        "clothing": {
+            "top": "leather jacket",
+            "top color": "brown",
+            "bottom": "trousers",
+            "bottom color": "black"
+        }
+    },
+    {
+        "name": "WillyFist",
+		"sex": "male",
+        "hair": {
+            "type": "long curly",
+            "color": "brown"
+        },
+        "clothing": {
+            "top": "shirt and vest",
+            "top color": "white and black",
+            "bottom": "plaid pants",
+            "bottom color": "red and black"
+        }
+    },
+    {
+        "name": "Zimbor",
+		"sex": "male",
+        "hair": {
+            "type": "short curly",
+            "color": "blond"
+        },
+        "clothing": {
+            "top": "polo shirt",
+            "top color": "light blue",
+            "bottom": "khaki pants",
+            "bottom color": "beige"
+        }
+    }
+]
