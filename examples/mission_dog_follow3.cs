@@ -59,8 +59,10 @@ namespace GTA
 		private int pause = 150;
 		private int endPause = 2400;
 		private bool isPaused = false;
+		private bool isAuto = false;
 
-
+		private int dog_handle = 0;
+		private int vehicle_handle = 0;
 
 		public mission_dog_follow3()
 		{
@@ -96,6 +98,8 @@ namespace GTA
 
 			vehicle = World.CreateVehicle(VehicleHash.BestiaGTS, carPos);
 			vehicle.Heading = 240;
+			vehicle_handle = vehicle.Handle;
+
 			dogModel = new Model(PedHash.Shepherd);
 			if (dogModel.IsValid)
 			{
@@ -104,6 +108,11 @@ namespace GTA
 				dog.Heading = 180;
 				
 			}
+			dog_handle = dog.Handle;
+			Log.Message(Log.Level.Info, "mission_dog_follow3::load, dog_handle:", dog_handle.ToString(),
+				", vehicle_handle:", vehicle_handle.ToString());
+
+			CreateFile();
 
 			if (vehicle != null && dog != null )
 			{
@@ -112,6 +121,11 @@ namespace GTA
 			}
 		}
 
+		protected override string GetMissionInfo()
+		{
+			string content = $"vehicle: {vehicle_handle}\ndog: {dog_handle}";
+			return content;
+		}
 		
 		public override void destroy()
 		{
@@ -190,9 +204,10 @@ namespace GTA
 			{
 				if (target != vehicle) return;
 			}
-			
-			if (!walkToState) walkToState = PlayerActions.walkTo(target);
-
+			if (isAuto)
+			{
+				if (!walkToState) walkToState = PlayerActions.walkTo(target);
+			}
 			float distance = Vector3.Distance(player.Position, target.Position);
 			//Log.Message(Log.Level.Debug, "walkTo, ", " state: ", state.ToString(), " target: ", target.ToString()," distance: ", distance.ToString());
 			GTA.UI.Screen.ShowSubtitle($"state: {state.ToString()}, distance: {distance}");
@@ -238,7 +253,10 @@ namespace GTA
 			Ped ped = target as Ped;
 			if (ped != null)
 			{
-				if (!dogFollowState) dogFollowState = PlayerActions.letFollow(ped);
+				if(isAuto)
+				{
+					if (!dogFollowState) dogFollowState = PlayerActions.letFollow(ped);
+				}
 			}
 			if (dogFollowState)
 			{
@@ -266,7 +284,10 @@ namespace GTA
 			Log.Message(Log.Level.Debug, "letStopFollow, ", " state: ", state.ToString(), " target: ", target.ToString(), " distance: ", distance.ToString());
 			if (distance < 5.0f)
 			{
-				PlayerActions.letStopFollow(ped);
+				if(isAuto)
+				{
+					PlayerActions.letStopFollow(ped);
+				}
 				curState = MissionState.PlayerInVehicle;
 				GTA.UI.Notification.Show("Command dog to stop follow completed. Player in vehicle.");
 			}
@@ -285,8 +306,10 @@ namespace GTA
 				counter++;
 				return;
 			}
-			if (!playerInVehicleState) playerInVehicleState = PlayerActions.getOnVehicle(target);
-
+			if (isAuto)
+			{
+				if (!playerInVehicleState) playerInVehicleState = PlayerActions.getOnVehicle(target);
+			}
 			if (player.IsInVehicle())
 			{
 				curState = MissionState.OpenFrontRightDoor;
@@ -306,7 +329,10 @@ namespace GTA
 				counter++;
 				return;
 			}
-			PlayerActions.openVehicleFrontRightDoor();
+			if (isAuto)
+			{
+				PlayerActions.openVehicleFrontRightDoor();
+			}
 			bool isRightFrontDoorOpen = vehicle.Doors[VehicleDoorIndex.FrontRightDoor].IsOpen;
 			//Log.Message(Log.Level.Debug, "OpenFrontRightDoor");
 
@@ -328,8 +354,10 @@ namespace GTA
 				counter++;
 				return;
 			}
-			if (!dogOnVehicle) dogOnVehicle = PlayerActions.letOn(tool, target);
-
+			if (isAuto)
+			{
+				if (!dogOnVehicle) dogOnVehicle = PlayerActions.letOn(tool, target);
+			}
 			if (dog.IsInVehicle())
 			{
 				curState = MissionState.Completed;
