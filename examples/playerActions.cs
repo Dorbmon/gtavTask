@@ -749,7 +749,7 @@ namespace GTA
 		public static async Task getImageAsync()
 		{
 			Ped player = Game.Player.Character;
-
+			
 			int numPictureFOV = 8;
 			float angle = 45f;
 
@@ -760,15 +760,25 @@ namespace GTA
 			for (int i = 1; i <= numPictureFOV; i++)
 			{
 				//change camera rotation
-				
-				for (int _ = 0; _ < angle; _ += 5)
-				{
-					if (player.Heading + 90f <= 360f)
-						player.Heading += 90f;
-					else player.Heading -= 270f;
+				if(player.IsInVehicle()){
+					if (player.Heading + 45f <= 360f)
+						player.Heading += 45f;
+					else player.Heading -= 315f;
 					//GTA.UI.Notification.Show("Turn 5 degree. Heading = " + player.Heading.ToString());
 					await Task.Delay(500);
 				}
+				else
+				{
+					for (int _ = 0; _ < angle; _ += 5)
+					{
+						if (player.Heading + 90f <= 360f)
+							player.Heading += 90f;
+						else player.Heading -= 270f;
+						//GTA.UI.Notification.Show("Turn 5 degree. Heading = " + player.Heading.ToString());
+						await Task.Delay(500);
+					}
+				}
+				
 
 				keybd_event(Keys.L, 0, 0, 0);
 				//GTA.UI.Notification.Show("RGBD image acquired.");
