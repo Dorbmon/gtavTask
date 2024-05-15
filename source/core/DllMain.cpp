@@ -143,7 +143,7 @@ internal:
 	
 	static WinForms::Keys reloadKey = WinForms::Keys::None;
 	static WinForms::Keys consoleKey = WinForms::Keys::F4;
-	static WinForms::Keys watcherKey = WinForms::Keys::F5;
+	static WinForms::Keys watcherKey = WinForms::Keys::F6;
 
 	static unsigned int scriptTimeoutThreshold = 50000;
 	static bool shouldWarnOfScriptsBuiltAgainstDeprecatedApiWithTicker = true;
@@ -152,6 +152,7 @@ internal:
 	{
 		console = (SHVDN::Console ^)AppDomain::CurrentDomain->GetData("Console");
 	}
+	
 	static void SetFileWatcher()
 	{
 		watcher = (SHVDN::FileWatcher^)AppDomain::CurrentDomain->GetData("FileWatcher");
@@ -178,11 +179,13 @@ static void ScriptHookVDotNet_ManagedInit()
 				stashedConsoleCommandHistory = console->CommandHistory;
 				console = nullptr;
 			}
+			
 			if (watcher != nullptr)
 			{
 				//save previous watcher history?
 				watcher = nullptr;
 			}
+			
 			SHVDN::ScriptDomain::Unload(domain);
 			domain = nullptr;
 		}
@@ -194,7 +197,7 @@ static void ScriptHookVDotNet_ManagedInit()
 
 	// Load configuration
 	String ^scriptPath = "scripts";
-
+	String^ watcherPath = nullptr;
 	try
 	{
 		array<String ^> ^config = IO::File::ReadAllLines(IO::Path::ChangeExtension(Assembly::GetExecutingAssembly()->Location, ".ini"));
@@ -236,6 +239,10 @@ static void ScriptHookVDotNet_ManagedInit()
 				{
 					ScriptHookVDotNet::shouldWarnOfScriptsBuiltAgainstDeprecatedApiWithTicker = outVal;
 				}
+			}
+			else if (String::Equals(keyStr, "WatcherFilePath", StringComparison::OrdinalIgnoreCase))
+			{
+				watcherPath = valueStr->Trim('"');
 			}
 		}
 	}
@@ -292,7 +299,7 @@ static void ScriptHookVDotNet_ManagedInit()
 	{
 		SHVDN::Log::Message(SHVDN::Log::Level::Error, "Failed to create console: ", ex->ToString());
 	}
-
+	
 	try
 	{
 		//Instantiate filewatcher inside script domain
@@ -307,11 +314,13 @@ static void ScriptHookVDotNet_ManagedInit()
 		domain->AppDomain->DoCallBack(gcnew CrossAppDomainDelegate(&ScriptHookVDotNet::SetFileWatcher));
 
 		watcher->SetConsole(console);
+		watcher->SetWatcherPath(watcherPath);
 	}
 	catch (Exception^ ex)
 	{
 		SHVDN::Log::Message(SHVDN::Log::Level::Error, "Failed to create filewatcher: ", ex->ToString());
 	}
+	
 	// Start scripts in the newly created domain
 	domain->Start();
 }
@@ -364,13 +373,18 @@ static void ScriptHookVDotNet_ManagedKeyboardMessage(unsigned long keycode, bool
 		if (console->IsOpen)
 			return;
 	}
-
+	
 	SHVDN::FileWatcher^ watcher = ScriptHookVDotNet::watcher;
 	if (watcher != nullptr)
 	{
-		watcher->DoKeyEvent(keys, keydown);
+		if (keydown && keys == ScriptHookVDotNet::watcherKey)
+		{
+			watcher->IsOpen = !watcher->IsOpen;
+			return;
+		}
+		//watcher->DoKeyEvent(keys, keydown);
 	}
-
+	
 	SHVDN::ScriptDomain ^scriptDomain = ScriptHookVDotNet::domain;
 	if (scriptDomain != nullptr)
 	{

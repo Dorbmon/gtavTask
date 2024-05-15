@@ -9,13 +9,14 @@ namespace SHVDN
 		private SHVDN.Console console;
 		private DateTime lastFileWriteTime = DateTime.MinValue;
 		private int lastCommandCount = 0;
-		private bool isOpen = false;
-		private string filePath = @"c";
+		private bool _isOpen = false;
+		private static string filePath = @"C:\Program Files\Epic Games\GTAV\command";
 
 		public FileWatcher()
 		{
 			watcher = new FileSystemWatcher();
-			watcher.Path = @"C:\Program Files\Epic Games\GTAV\command";
+			//watcher.Path = @"C:\Program Files\Epic Games\GTAV\command";
+			watcher.Path = filePath;
 			watcher.Filter = "player_action_command.txt";
 
 			watcher.Changed += OnFileChanged;
@@ -24,7 +25,8 @@ namespace SHVDN
 			watcher.Renamed += OnFileRenamed;
 
 			watcher.EnableRaisingEvents = false;
-			isOpen = true;
+			_isOpen = false;
+			Log.Message(Log.Level.Info, $"FileWatcher()::{filePath}");
 		}
 
 		public void startWatch()
@@ -35,6 +37,27 @@ namespace SHVDN
 		public void endWatch()
 		{
 			watcher.EnableRaisingEvents = false;
+		}
+
+		public bool IsOpen
+		{
+			get => _isOpen;
+			set
+			{
+				_isOpen = value;
+				//DisableControlsThisFrame();
+				if (_isOpen)
+				{
+					startWatch();
+					Log.Message(Log.Level.Info, "FileWatcher: start watch.");
+					return;
+				}
+
+				endWatch();
+				Log.Message(Log.Level.Info, "FileWatcher: stop watch.");
+				//_lastClosedTickCount = Environment.TickCount + 200; // Hack so the input gets blocked long enough
+				//_shouldBlockControls = true;
+			}
 		}
 
 		private void OnFileChanged(object sender, FileSystemEventArgs e)
@@ -84,9 +107,17 @@ namespace SHVDN
 			this.console = console;
 		}
 
+		public static void SetWatcherPath(string path)
+		{
+			filePath = path;
+			//watcher.Path = watcherPath;
+			Log.Message(Log.Level.Info, $"FileWatcher::SetWatcherPath={filePath}");
+		}
+
 		internal void DoKeyEvent(Keys keys, bool status)
 		{
-			if (!status || !isOpen)
+			//msclr::lock l(lockObject);
+			if (!status || !_isOpen)
 			{
 				return; // Only interested in key down events and do not need to handle events when the console is not open
 			}
